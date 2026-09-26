@@ -1009,7 +1009,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       world.add(pts);
       return { pts, base, uniforms, seed, count, gatherCount };
     };
-    const motes = makeMotes(520, 3, 14, [.3, R * 1.6], .9, 220);
+    const motes = makeMotes(640, 3, 14, [.3, R * 1.6], .9, 340);
     const bokeh = makeMotes(26, 60, 150, [R * 1.2, R * 2.1], .06, 0);
 
     const perim = (t, out) => {
@@ -1099,12 +1099,12 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
           c.uniforms.uBright.value = b;
           c.uniforms.uTime.value = t;
           c.uniforms.uVel.value = v;
-          c.uniforms.uGlow.value = i === focus ? stK * Math.min(1, stT * 1.2) : 0;
+          c.uniforms.uGlow.value = i === focus ? stK * Math.min(1, stT * 2.5) * .45 : 0;
         });
 
         // stairs: a wave of light races up to the print, each tread flares then keeps a warm glow
-        treadMat.opacity = .45 * (1 - .55 * recK) + .4 * stK;
-        const head = stT * 2.6;                           // wave front, in works per second
+        treadMat.opacity = .45 * (1 - .55 * recK) + .12 * stK;
+        const head = stT * 5.5;                           // wave front, in works per second
         for (let k = 0; k < treadCount; k++) {
           const rel = (focus + RUN) - treadF[k];          // 0 = far below, RUN = under the print
           let flare = 0, keep = 0;
@@ -1112,14 +1112,14 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
             const since = head - rel;
             if (since > 0) { flare = Math.exp(-since * 3.2); keep = Math.min(1, since * 4) * (.35 + .65 * (rel / RUN)); }
           }
-          const lit = Math.min(1, (flare * 1.2 + keep * .7)) * stK;
-          treads.setColorAt(k, tmpC.copy(BRASS).lerp(flare > .3 ? HOT : WARM, lit));
-          pools.setColorAt(k, tmpC.copy(WARM).multiplyScalar((flare * 1.6 + keep * .55) * stK));
+          const lit = Math.min(1, (flare * .7 + keep * .38)) * stK;
+          treads.setColorAt(k, tmpC.copy(BRASS).lerp(flare > .6 ? HOT : WARM, lit));
+          pools.setColorAt(k, tmpC.copy(WARM).multiplyScalar((flare * .6 + keep * .2) * stK));
         }
         treads.instanceColor.needsUpdate = true;
         pools.instanceColor.needsUpdate = true;
-        glowU.uBoost.value = stK * (.4 + .6 * Math.exp(-Math.max(0, stT - RUN / 2.6) * 2));
-        coreMat.color.setHex(0xe7cd98).multiplyScalar(1 + stK * .3);
+        glowU.uBoost.value = stK * (.15 + .35 * Math.exp(-Math.max(0, stT - RUN / 5.5) * 3));
+        coreMat.color.setHex(0xe7cd98).multiplyScalar(1 + stK * .12);
 
         // motes: drift upward; on hover the first group streams around the print in strands
         [motes, bokeh].forEach(m => { m.uniforms.uTime.value = t; });
@@ -1134,9 +1134,10 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
           if (y > 6) y = -6;
           motes.base[i * 3 + 1] = y;
           if (i < motes.gatherCount && dustK > .005) {
-            const strand = i % 4, sd = motes.seed[i];
-            perim(i / motes.gatherCount * .25 + strand * .25 + t * (.045 + strand * .006), v3);
-            const off = .02 + sd * .07;
+            const layer = i % 3, sd = motes.seed[i];
+            // evenly spaced around the full outline, all flowing at one speed; layers add depth
+            perim(i / motes.gatherCount + t * .04 + (sd - .5) * .004, v3);
+            const off = .015 + layer * .03 + sd * .015;
             const a = v3.x / R, rr = R + off;
             v3.set(Math.sin(a) * rr, v3.y + (sd - .5) * .05, Math.cos(a) * rr);
             cards[focus].pivot.localToWorld(v3);
