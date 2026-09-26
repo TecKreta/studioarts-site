@@ -973,18 +973,43 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
         c.textAlign = 'right'; c.fillText('S T U D I O   A R T S', wx + ww, cy);
       });
     };
-    // accent foil colour picked from each key visual (for the "accent" finish)
+    // accent foil colour picked from each key visual (for the "accent" finish).
+    // The award badge in the top-left corner is not part of the artwork, so that area is skipped,
+    // and the accent is a vivid hue that stands apart from the image's dominant colour.
     const accentOf = img => {
-      const c = document.createElement('canvas'); c.width = c.height = 24;
-      const g = c.getContext('2d'); g.drawImage(img, 0, 0, 24, 24);
-      const dd = g.getImageData(0, 0, 24, 24).data; let best = null, score = -1;
+      const W = 64, Hh = 36;
+      const c = document.createElement('canvas'); c.width = W; c.height = Hh;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0, W, Hh);
+      const dd = g.getImageData(0, 0, W, Hh).data;
+      const BINS = 24, bins = Array.from({ length: BINS }, () => ({ w: 0, x: 0, y: 0, s: 0 }));
       const col = new THREE.Color(), hsl = {};
-      for (let i = 0; i < dd.length; i += 4) {
+      for (let y = 0; y < Hh; y++) for (let x = 0; x < W; x++) {
+        if (x < W * .17 && y < Hh * .45) continue;          // award badge area
+        const i = (y * W + x) * 4;
         col.setRGB(dd[i] / 255, dd[i + 1] / 255, dd[i + 2] / 255); col.getHSL(hsl);
-        const sc = hsl.s * (1 - Math.abs(hsl.l - .55) * 1.6);
-        if (sc > score) { score = sc; best = { h: hsl.h, s: hsl.s }; }
+        if (hsl.s < .25 || hsl.l < .18 || hsl.l > .88) continue;
+        const w = hsl.s * (1 - Math.abs(hsl.l - .55) * 1.3);
+        const b = bins[Math.floor(hsl.h * BINS) % BINS];
+        b.w += w; b.x += Math.cos(hsl.h * Math.PI * 2) * w; b.y += Math.sin(hsl.h * Math.PI * 2) * w; b.s += hsl.s * w;
       }
-      col.setHSL(best.h, Math.min(.55, best.s), .62);
+      // smooth neighbouring bins so a hue split across a boundary still counts as one
+      const sm = bins.map((_, k) => bins[k].w + (bins[(k + 1) % BINS].w + bins[(k + BINS - 1) % BINS].w) * .5);
+      const total = sm.reduce((x, y) => x + y, 0);
+      if (total <= 0) return null;
+      let dom = 0;
+      sm.forEach((w, k) => { if (w > sm[dom]) dom = k; });
+      // the accent: a vivid hue clearly away from the dominant one (>= 60deg), present but not everywhere
+      let best = dom, bestScore = -1;
+      sm.forEach((w, k) => {
+        const dist = Math.min(Math.abs(k - dom), BINS - Math.abs(k - dom)) / BINS * 360;
+        if (dist < 60 || w < total * .025) return;
+        const sat = bins[k].w ? bins[k].s / bins[k].w : 0;
+        const score = w * sat * sat;
+        if (score > bestScore) { bestScore = score; best = k; }
+      });
+      const b = bins[best];
+      let h = Math.atan2(b.y, b.x) / (Math.PI * 2); if (h < 0) h += 1;
+      col.setHSL(h, Math.min(.55, Math.max(.3, b.s / b.w)), .62);
       return '#' + col.getHexString();
     };
     const loader = new THREE.TextureLoader();
