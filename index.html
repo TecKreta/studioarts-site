@@ -907,15 +907,18 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       }`;
 
     /* mat board artwork: paper grain + per-work caption and foil, in several colour themes */
+    // ebony mat; the foil (lines, number, logo) comes in several finishes
+    const EBONY = { bg: '#171412', age: 'rgba(0,0,0,.35)', title: '#ece3d0', bevel: [.3, .27, .23] };
     const MAT_THEMES = {
-      ivory:    { bg: '#eee6d6', age: 'rgba(120,90,40,.16)',  line: '#a8874c', title: '#2a241c', sub: '#9a7a42', foil: [.86, .68, .36], bevel: [.98, .96, .91], sheen: 1 },
-      ebony:    { bg: '#171412', age: 'rgba(0,0,0,.35)',      line: '#b8955a', title: '#ece3d0', sub: '#c9a86a', foil: [.9, .72, .4],  bevel: [.3, .27, .23],   sheen: .6 },
-      forest:   { bg: '#1d2b24', age: 'rgba(0,0,0,.3)',       line: '#b89a5e', title: '#e8e0cc', sub: '#c6a96b', foil: [.84, .68, .4], bevel: [.3, .38, .33],   sheen: .6 },
-      midnight: { bg: '#161c2b', age: 'rgba(0,0,0,.32)',      line: '#aeb5c2', title: '#e6e8ee', sub: '#b9c0cc', foil: [.78, .8, .86], bevel: [.3, .34, .45],   sheen: .7 },
-      washi:    { bg: '#f3f0e8', age: 'rgba(60,50,40,.1)',    line: '#2a2622', title: '#1d1a17', sub: '#4a443d', foil: [.16, .14, .12], bevel: [1, .99, .96],   sheen: .8 },
-      auto:     { auto: true, line: '#c3a468', title: '#efe6d3', sub: '#cfb27a', foil: [.88, .7, .38], sheen: .6 },
+      gold:      { ...EBONY, line: '#b8955a', sub: '#c9a86a', foil: [.9, .72, .4],   sheen: .6 },
+      champagne: { ...EBONY, line: '#d6c49c', sub: '#e0d0ac', foil: [.94, .87, .7],  sheen: .6 },
+      platinum:  { ...EBONY, line: '#b7bbc2', sub: '#c8ccd3', foil: [.84, .86, .9],  sheen: .7 },
+      copper:    { ...EBONY, line: '#b9744f', sub: '#cc8b66', foil: [.88, .52, .34], sheen: .6 },
+      bronze:    { ...EBONY, line: '#86703f', sub: '#9c8552', foil: [.62, .52, .3],  sheen: .45 },
+      bone:      { ...EBONY, line: '#d8cfbd', sub: '#d8cfbd', foil: [.86, .83, .77], sheen: .5 },
+      accent:    { ...EBONY, auto: true, line: '#c3a468', sub: '#cfb27a', foil: [.88, .7, .38], sheen: .6 },
     };
-    let matTheme = 'ivory';
+    let matTheme = 'gold';
     const MW = 1600, MH = Math.round(1600 * FH / FW);
     const px = (x, y) => [x / FW * MW, y / FH * MH];            // mat units -> canvas px (from top-left)
     // neutral grain drawn once, laid over any mat colour
@@ -944,7 +947,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     };
     const drawMat = (g, gm, d) => {
       const th = MAT_THEMES[matTheme];
-      const bg = th.auto ? (d.tone || '#1c1916') : th.bg;
+      const bg = th.bg;
+      const line = th.auto && d.accent ? d.accent : th.line;
       g.globalCompositeOperation = 'source-over';
       g.fillStyle = bg; g.fillRect(0, 0, MW, MH);
       g.globalCompositeOperation = 'overlay'; g.globalAlpha = .55;
@@ -954,14 +958,14 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       age.addColorStop(0, 'rgba(0,0,0,0)'); age.addColorStop(1, th.age || 'rgba(0,0,0,.3)');
       g.fillStyle = age; g.fillRect(0, 0, MW, MH);
       gm.fillStyle = '#000'; gm.fillRect(0, 0, MW, MH);
-      drawGoldLines(g, th.line); drawGoldLines(gm, '#fff');
+      drawGoldLines(g, line); drawGoldLines(gm, '#fff');
       const cy = wy + wh + (MH - wy - wh) * .52;
       const title = d.plainTitle.length > 16 ? d.plainTitle.slice(0, 16) + '…' : d.plainTitle;
       g.textBaseline = gm.textBaseline = 'middle';
       g.fillStyle = th.title; g.textAlign = 'center';
       g.font = '800 46px "Shippori Mincho B1", serif';
       g.fillText(title, MW / 2, cy);
-      [[g, th.sub], [gm, '#fff']].forEach(([c, col]) => {
+      [[g, th.auto && d.accent ? d.accent : th.sub], [gm, '#fff']].forEach(([c, col]) => {
         c.fillStyle = col;
         c.font = '700 28px "Courier Prime", monospace';
         c.textAlign = 'left'; c.fillText(d.no, wx, cy);
@@ -969,15 +973,18 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
         c.textAlign = 'right'; c.fillText('S T U D I O   A R T S', wx + ww, cy);
       });
     };
-    // deep tone taken from each key visual (for the "auto" theme)
-    const toneOf = img => {
-      const c = document.createElement('canvas'); c.width = c.height = 16;
-      const g = c.getContext('2d'); g.drawImage(img, 0, 0, 16, 16);
-      const dd = g.getImageData(0, 0, 16, 16).data; let r = 0, gg = 0, b = 0;
-      for (let i = 0; i < dd.length; i += 4) { r += dd[i]; gg += dd[i + 1]; b += dd[i + 2]; }
-      const col = new THREE.Color(r / 256 / 255, gg / 256 / 255, b / 256 / 255);
-      const hsl = {}; col.getHSL(hsl);
-      col.setHSL(hsl.h, Math.min(.45, hsl.s * 1.1), .15);
+    // accent foil colour picked from each key visual (for the "accent" finish)
+    const accentOf = img => {
+      const c = document.createElement('canvas'); c.width = c.height = 24;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0, 24, 24);
+      const dd = g.getImageData(0, 0, 24, 24).data; let best = null, score = -1;
+      const col = new THREE.Color(), hsl = {};
+      for (let i = 0; i < dd.length; i += 4) {
+        col.setRGB(dd[i] / 255, dd[i + 1] / 255, dd[i + 2] / 255); col.getHSL(hsl);
+        const sc = hsl.s * (1 - Math.abs(hsl.l - .55) * 1.6);
+        if (sc > score) { score = sc; best = { h: hsl.h, s: hsl.s }; }
+      }
+      col.setHSL(best.h, Math.min(.55, best.s), .62);
       return '#' + col.getHexString();
     };
     const loader = new THREE.TextureLoader();
@@ -1000,7 +1007,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       };
       uniforms.uTex.value = loader.load(d.img, t => {
         t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; uniforms.uReady.value = 1;
-        try { d.tone = toneOf(t.image); if (MAT_THEMES[matTheme].auto) window.setMatTheme(matTheme); } catch (e) {}
+        try { d.accent = accentOf(t.image); if (MAT_THEMES[matTheme].auto) window.setMatTheme(matTheme); } catch (e) {}
       });
       const card = new THREE.Mesh(printGeo, new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag }));
       card.userData.i = i;
@@ -1016,9 +1023,9 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       cards.forEach(c => {
         drawMat(c.mctx, c.gctx, c.d);
         c.matTex.needsUpdate = c.goldTex.needsUpdate = true;
-        c.uniforms.uFoil.value.set(...th.foil);
-        const bv = th.bevel || (() => { const k = new THREE.Color(c.d.tone || '#1c1916'); k.offsetHSL(0, 0, .12); return [k.r, k.g, k.b]; })();
-        c.uniforms.uBevel.value.set(...bv);
+        if (th.auto && c.d.accent) { const k = new THREE.Color(c.d.accent); c.uniforms.uFoil.value.set(k.r, k.g, k.b); }
+        else c.uniforms.uFoil.value.set(...th.foil);
+        c.uniforms.uBevel.value.set(...th.bevel);
         c.uniforms.uSheen.value = th.sheen;
       });
     };
