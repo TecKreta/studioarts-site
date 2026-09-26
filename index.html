@@ -97,56 +97,74 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
 /* ============================================
    HERO — the dark stage
    ============================================ */
-.stage{position:relative;height:100vh;height:100svh;min-height:640px;max-height:1100px;overflow:hidden;isolation:isolate;
-  --x:68%;--y:40%;--r:190px;cursor:none;touch-action:pan-y}
+.stage{position:relative;height:100vh;height:100svh;min-height:680px;max-height:1100px;overflow:hidden;isolation:isolate}
+.stage::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 75% 45%,rgba(201,168,106,.07),transparent 60%)}
+.stage-copy{position:relative;z-index:2;height:100%}
+.stage-copy .wrap{height:100%;display:flex;flex-direction:column;justify-content:center;padding-top:80px;padding-bottom:60px}
+.copy{max-width:min(520px,38vw)}
+.kicker{font-family:var(--type);font-size:12px;letter-spacing:.2em;color:var(--brass);text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.kicker::before{content:"";width:36px;height:1px;background:currentColor}
+.hero-jp{display:block;font-family:var(--jp);font-weight:800;font-size:clamp(54px,7vw,108px);line-height:1.18;letter-spacing:.1em;margin-top:26px}
+.hero-jp span{display:block}
+.hero-jp em{font-style:normal;color:var(--brass)}
+.hero-en{display:block;font-family:var(--en);font-style:italic;font-size:clamp(22px,2.2vw,30px);color:var(--brass);margin-top:10px}
+.hero-lead{margin-top:24px;color:var(--mute);font-size:14px}
+.hero-lead strong{color:var(--bone);font-weight:500}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+
+/* investigation area */
+.zone{position:absolute;z-index:3;top:118px;bottom:92px;left:max(46%,calc(50% - 60px));right:var(--gutter);
+  --x:60%;--y:40%;--r:170px;cursor:none;touch-action:pan-y;
+  border:1px dashed rgba(201,168,106,.28);background:rgba(236,229,215,.015);transition:border-color .4s,background .4s}
+.zone.active{border-color:rgba(201,168,106,.7);background:rgba(236,229,215,.025)}
+.zone-in{position:absolute;inset:0;overflow:hidden}
+.zc{position:absolute;width:16px;height:16px;border:0 solid var(--brass);pointer-events:none}
+.zc.a{left:-2px;top:-2px;border-left-width:2px;border-top-width:2px}
+.zc.b{right:-2px;top:-2px;border-right-width:2px;border-top-width:2px}
+.zc.c{left:-2px;bottom:-2px;border-left-width:2px;border-bottom-width:2px}
+.zc.d{right:-2px;bottom:-2px;border-right-width:2px;border-bottom-width:2px}
+.zone-label{position:absolute;left:0;bottom:calc(100% + 10px);display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  font-family:var(--type);font-size:11px;letter-spacing:.18em;color:var(--brass);text-transform:uppercase;white-space:nowrap}
+.zone-label .tip{color:var(--mute);letter-spacing:.06em;text-transform:none}
+.zone-label .rec{width:7px;height:7px;border-radius:50%;background:var(--string);animation:rec 1.6s infinite}
+@keyframes rec{50%{opacity:.2}}
 .board{position:absolute;inset:0}
-.board.dim{filter:brightness(.08) saturate(.3)}
+.board.dim{filter:brightness(.1) saturate(.3)}
 .board.lit{
   -webkit-mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),#000 0%,#000 45%,rgba(0,0,0,.35) 75%,transparent 100%);
           mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),#000 0%,#000 45%,rgba(0,0,0,.35) 75%,transparent 100%);
 }
 .photo{position:absolute;left:var(--l);top:var(--t);width:var(--w);transform:rotate(var(--rot));
-  background:#f1ebdf;padding:7px 7px 26px;box-shadow:0 18px 40px rgba(0,0,0,.6)}
+  background:#f1ebdf;padding:6px 6px 24px;box-shadow:0 18px 40px rgba(0,0,0,.6)}
 .photo img{width:100%;aspect-ratio:16/9;object-fit:cover}
-.photo figcaption{position:absolute;left:10px;right:10px;bottom:4px;font-family:var(--hand);font-size:12px;color:#3a332b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.photo figcaption{position:absolute;left:10px;right:10px;bottom:3px;font-family:var(--hand);font-size:12px;color:#3a332b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .photo::before{content:"";position:absolute;left:50%;top:-6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;
   background:radial-gradient(circle at 35% 35%,#e6c78d,#8d6a2c);box-shadow:0 2px 3px rgba(0,0,0,.5);z-index:2}
 .strings{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .strings line{stroke:var(--string);stroke-width:1.4;vector-effect:non-scaling-stroke}
 .clues{position:absolute;inset:0;pointer-events:none}
 .clue{position:absolute;left:var(--l);top:var(--t);transform:translate(-50%,-50%) rotate(var(--rot,0deg));
-  font-family:var(--hand);font-size:clamp(15px,1.4vw,19px);color:var(--brass-hi);white-space:nowrap;opacity:0;
-  text-shadow:0 0 12px rgba(0,0,0,.9)}
+  font-family:var(--hand);font-size:clamp(14px,1.3vw,18px);color:var(--brass-hi);white-space:nowrap;opacity:0;text-shadow:0 0 12px rgba(0,0,0,.9)}
 .clue.found{opacity:1!important;color:var(--bone)}
 .clue.found::after{content:"";position:absolute;inset:-8px -14px;border:1px solid var(--brass);border-radius:50%;transform:rotate(-3deg)}
 .torch{position:absolute;left:var(--x);top:var(--y);width:calc(var(--r)*2);height:calc(var(--r)*2);transform:translate(-50%,-50%);
-  border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(231,205,152,.12);
-  background:radial-gradient(circle,rgba(255,236,190,.07),transparent 60%)}
-.stage::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(90deg,rgba(13,12,11,.92) 0%,rgba(13,12,11,.55) 34%,transparent 58%),linear-gradient(0deg,var(--ink),transparent 22%)}
-.stage-copy{position:absolute;z-index:2;left:0;right:0;bottom:0;top:0;pointer-events:none}
-.stage-copy .wrap{height:100%;display:flex;flex-direction:column;justify-content:center;padding-top:80px;padding-bottom:80px}
-.stage-copy a,.stage-copy button{pointer-events:auto;cursor:pointer}
-.kicker{font-family:var(--type);font-size:12px;letter-spacing:.2em;color:var(--brass);text-transform:uppercase;display:flex;align-items:center;gap:12px}
-.kicker::before{content:"";width:36px;height:1px;background:currentColor}
-.hero-jp{display:block;font-family:var(--jp);font-weight:800;font-size:clamp(54px,7.4vw,112px);line-height:1.18;letter-spacing:.1em;margin-top:26px;text-shadow:0 6px 40px rgba(0,0,0,.6)}
-.hero-jp span{display:block}
-.hero-jp em{font-style:normal;color:var(--brass)}
-.hero-en{display:block;font-family:var(--en);font-style:italic;font-size:clamp(22px,2.2vw,30px);color:var(--brass);margin-top:10px}
-.hero-lead{margin-top:24px;max-width:31em;color:var(--mute);font-size:14px}
-.hero-lead strong{color:var(--bone);font-weight:500}
-.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
-.hunt{position:absolute;z-index:3;right:var(--gutter);bottom:28px;display:flex;align-items:center;gap:16px;
+  border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(231,205,152,.16);background:radial-gradient(circle,rgba(255,236,190,.06),transparent 60%);transition:box-shadow .3s}
+.torch::before,.torch::after{content:"";position:absolute;left:50%;top:50%;background:var(--brass-hi);opacity:0;transition:opacity .3s}
+.torch::before{width:18px;height:1px;margin-left:-9px}
+.torch::after{width:1px;height:18px;margin-top:-9px}
+.zone.active .torch{box-shadow:inset 0 0 0 1px rgba(231,205,152,.45)}
+.zone.active .torch::before,.zone.active .torch::after{opacity:.9}
+.hunt{position:absolute;left:0;right:0;top:calc(100% + 12px);display:flex;justify-content:flex-end;align-items:center;gap:14px;
   font-family:var(--type);font-size:12px;letter-spacing:.12em;color:var(--mute)}
 .hunt b{color:var(--brass-hi);font-weight:700;font-size:15px}
 .hunt-dots{display:flex;gap:6px}
 .hunt-dots i{width:8px;height:8px;border:1px solid var(--brass);border-radius:50%;transition:background .4s}
 .hunt-dots i.on{background:var(--brass)}
-.hunt-msg{position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);opacity:0;pointer-events:none;
-  background:var(--paper);color:var(--paper-ink);padding:28px 36px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.7);transition:opacity .6s,transform .6s var(--ease);max-width:min(440px,86vw)}
+.hunt-msg{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);opacity:0;pointer-events:none;cursor:auto;
+  background:var(--paper);color:var(--paper-ink);padding:26px 30px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.7);transition:opacity .6s,transform .6s var(--ease);width:min(380px,86%)}
 .hunt-msg.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
 .hunt-msg p:first-child{font-family:var(--type);font-size:12px;letter-spacing:.2em;color:var(--stamp)}
-.hunt-msg p:nth-child(2){font-family:var(--jp);font-weight:800;font-size:22px;margin:8px 0 6px}
+.hunt-msg p:nth-child(2){font-family:var(--jp);font-weight:800;font-size:21px;margin:8px 0 6px}
 .hunt-msg p:nth-child(3){font-size:13px;color:var(--paper-mute)}
 .hunt-msg button{margin-top:16px;background:none;border:1px solid var(--paper-line);padding:6px 16px;font-family:var(--type);font-size:12px;letter-spacing:.14em;cursor:pointer;color:var(--paper-ink)}
 
@@ -210,12 +228,13 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
 .chars-note{margin-top:clamp(44px,6vw,64px);font-family:var(--jp);font-size:17px;letter-spacing:.06em;max-width:36em;line-height:2;color:var(--mute)}
 
 /* ============================================
-   SCENARIOS — hover list
+   SCENARIOS — spiral staircase
    ============================================ */
-.scen{background:var(--ink-2)}
-.slist{border-top:1px solid var(--line-2)}
-.srow{display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:24px;padding:30px 8px;border-bottom:1px solid var(--line);position:relative;transition:padding .5s var(--ease),background .5s}
-.srow:hover{background:rgba(236,229,215,.03);padding-left:22px}
+.scen{background:var(--ink-2);padding-bottom:clamp(72px,9vw,120px)}
+.scen .sh{margin-bottom:0}
+/* static list: fallback (no JS / reduced motion) and screen readers */
+.slist{border-top:1px solid var(--line-2);margin-top:clamp(44px,6vw,80px)}
+.srow{display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:24px;padding:30px 8px;border-bottom:1px solid var(--line)}
 .s-no{font-family:var(--type);font-size:13px;color:var(--brass);letter-spacing:.1em}
 .s-title{font-family:var(--jp);font-weight:800;font-size:clamp(24px,3.2vw,44px);letter-spacing:.06em;line-height:1.35}
 .s-title small{font-size:.42em;font-weight:500;color:var(--mute);letter-spacing:.12em;margin-left:.6em;white-space:nowrap}
@@ -224,11 +243,33 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
 .s-tags span{font-size:11px;letter-spacing:.1em;padding:2px 10px;border:1px solid var(--line-2);white-space:nowrap}
 .s-tags .new{border-color:var(--brass);color:var(--brass)}
 .s-thumb{display:none}
-.float{position:fixed;left:0;top:0;width:min(420px,32vw);aspect-ratio:16/9;pointer-events:none;z-index:40;opacity:0;
-  transform:translate(0,-50%) scale(.9) rotate(-3deg);transition:opacity .35s,transform .45s var(--ease);box-shadow:0 30px 70px rgba(0,0,0,.7);
-  background:#f1ebdf;padding:6px}
-.float.show{opacity:1;transform:translate(0,-50%) scale(1) rotate(-3deg)}
-.float img{width:100%;height:100%;object-fit:cover}
+.helix{display:none;position:relative}
+.helix-on .helix{display:block;height:calc(var(--n,6) * 70vh + 100vh)}
+.helix-on .slist{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.helix-sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.helix-core{position:absolute;left:var(--cx,64%);top:0;bottom:0;width:1px;margin-left:-.5px;
+  background:linear-gradient(transparent,rgba(201,168,106,.55) 30%,rgba(201,168,106,.55) 70%,transparent);box-shadow:0 0 30px 6px rgba(201,168,106,.12)}
+.helix-scene{position:absolute;inset:0;perspective:1600px;perspective-origin:var(--cx,64%) 46%}
+.helix-cyl{position:absolute;left:var(--cx,64%);top:48%;width:0;height:0;transform-style:preserve-3d;will-change:transform}
+.h-card{position:absolute;display:block;width:var(--cw);left:calc(var(--cw) / -2);top:calc(var(--cw) * -.3);
+  background:#f1ebdf;padding:6px 6px 26px;box-shadow:0 30px 60px rgba(0,0,0,.55);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.h-card img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.h-card span{position:absolute;left:10px;right:10px;bottom:4px;font-family:var(--type);font-size:11px;letter-spacing:.1em;color:#3a332b;display:flex;justify-content:space-between}
+.h-step{position:absolute;width:calc(var(--cw) * .34);height:calc(var(--cw) * .16);left:calc(var(--cw) * -.17);top:calc(var(--cw) * -.08);
+  border:1px solid rgba(201,168,106,.32);background:linear-gradient(90deg,rgba(201,168,106,.1),rgba(201,168,106,.02))}
+.helix-info{position:absolute;left:var(--gutter);top:50%;transform:translateY(-50%);width:min(400px,30vw);z-index:2}
+.helix-info .h-no{font-family:var(--type);font-size:13px;letter-spacing:.14em;color:var(--brass)}
+.helix-info h3{font-family:var(--jp);font-weight:800;font-size:clamp(28px,3.2vw,46px);line-height:1.3;letter-spacing:.06em;margin-top:10px;text-wrap:balance}
+.helix-info h3 small{display:block;font-size:.4em;font-weight:500;color:var(--mute);letter-spacing:.14em;margin-top:6px}
+.helix-info .h-desc{color:var(--mute);margin-top:14px;font-size:14px}
+.helix-info .s-tags{justify-content:flex-start;margin-top:18px;max-width:none}
+.helix-info>*{transition:opacity .35s,transform .35s var(--ease)}
+.helix-info.swap>*{opacity:0;transform:translateY(10px)}
+.helix-prog{position:absolute;left:var(--gutter);bottom:40px;display:flex;align-items:center;gap:14px;font-family:var(--type);font-size:12px;letter-spacing:.12em;color:var(--mute)}
+.helix-prog b{color:var(--brass-hi);font-size:15px}
+.helix-prog i{display:block;width:120px;height:1px;background:var(--line-2);position:relative}
+.helix-prog i u{position:absolute;left:0;top:0;height:1px;background:var(--brass);width:0}
+.helix-cue{position:absolute;right:var(--gutter);bottom:40px;font-family:var(--type);font-size:11px;letter-spacing:.2em;color:var(--dim);transition:opacity .5s}
 .scen-more{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:48px}
 .scen-more p{font-family:var(--jp);letter-spacing:.1em;color:var(--mute)}
 .scen-more b{color:var(--bone);font-size:1.3em}
@@ -308,32 +349,36 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
   .leads{grid-template-columns:1fr}
   .srow{grid-template-columns:60px 1fr}
   .s-tags{grid-column:2;justify-content:flex-start;max-width:none}
+  /* hero stacks: investigation area on top */
+  .stage{height:auto;min-height:0;max-height:none;display:flex;flex-direction:column}
+  .zone{position:relative;top:auto;bottom:auto;left:auto;right:auto;margin:118px var(--gutter) 0;height:min(420px,92vw)}
+  .photo{left:var(--ml,var(--l));top:var(--mt,var(--t));width:var(--mw,var(--w))}
+  .clue{left:var(--ml,var(--l));top:var(--mt,var(--t))}
+  .stage-copy .wrap{padding-top:88px;padding-bottom:80px}
+  .copy{max-width:none}
+  .helix-info{left:var(--gutter);right:var(--gutter);top:auto;bottom:88px;transform:none;width:auto}
+  .helix-info h3{font-size:clamp(24px,6.4vw,34px)}
+  .helix-info .h-desc{font-size:13px;margin-top:8px}
+  .helix-info .s-tags{margin-top:10px}
+  .helix-cue{display:none}
 }
 @media (max-width:640px){
   body{font-size:14px}
-  .stage{height:auto;min-height:0;max-height:none;padding-top:400px;cursor:auto}
-  .photo{left:var(--ml);top:var(--mt);width:var(--mw)}
-  .stage::after{background:linear-gradient(0deg,var(--ink) 38%,rgba(13,12,11,.6) 60%,transparent 80%)}
-  .stage-copy{position:relative}
-  .stage-copy .wrap{padding-top:0;padding-bottom:84px}
+  .zone{margin-top:112px}
+  .zone-label .tip{display:none}
   .hero-jp{font-size:clamp(48px,14vw,64px)}
-  .clue{left:var(--ml,var(--l));top:var(--mt,var(--t))}
-  .clue.m-hide{display:none}
-  .hunt{left:var(--gutter);right:auto;bottom:26px}
   .btn{padding:12px 16px;font-size:12px}
   .stamp{top:0;right:0;font-size:22px}
   .evidence{grid-template-columns:1fr}
   .cards{grid-template-columns:1fr;max-width:340px;margin:0 auto}
   .memos{grid-template-columns:1fr}
   .srow{grid-template-columns:1fr;gap:10px;padding:24px 0}
-  .srow:hover{padding-left:0}
   .s-thumb{display:block;aspect-ratio:16/9;object-fit:cover;width:100%;margin-bottom:6px}
   .s-tags{grid-column:1}
   .sus{width:calc(50% - 8px);max-width:160px}
   .ft .wrap{flex-direction:column;align-items:flex-start}
 }
 @media (hover:none){
-  .float{display:none}
   .card:hover .card-in{transform:none}
   .card[aria-pressed="true"]:hover .card-in{transform:rotateY(180deg)}
 }
@@ -364,50 +409,56 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
 
 <!-- HERO: dark stage -->
 <section class="stage" id="stage" aria-label="STUDIO ARTS">
-  <div class="board dim" id="boardDim" aria-hidden="true">
-    <svg class="strings" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
-    <figure class="photo" style="--l:46%;--t:13%;--w:27%;--rot:-6deg;--ml:4%;--mt:4%;--mw:58%"><img src="images/8.jpg" alt=""><figcaption>黒煙街のエリー</figcaption></figure>
-    <figure class="photo" style="--l:72%;--t:9%;--w:22%;--rot:5deg;--ml:54%;--mt:2%;--mw:44%"><img src="images/10.jpg" alt=""><figcaption>CRADLE MEMOIR</figcaption></figure>
-    <figure class="photo" style="--l:61%;--t:43%;--w:25%;--rot:3deg;--ml:38%;--mt:17%;--mw:52%"><img src="images/11.jpg" alt=""><figcaption>ペトリコールを纏って</figcaption></figure>
-    <figure class="photo" style="--l:84%;--t:38%;--w:20%;--rot:-4deg;--ml:-8%;--mt:19%;--mw:48%"><img src="images/１０８.jpg" alt=""><figcaption>妖の國</figcaption></figure>
-    <figure class="photo" style="--l:43%;--t:62%;--w:22%;--rot:-3deg;--ml:6%;--mt:31%;--mw:46%"><img src="images/華恋.jpg" alt=""><figcaption>華唄こいこい、毒味で一杯</figcaption></figure>
-    <figure class="photo" style="--l:74%;--t:70%;--w:21%;--rot:-8deg;--ml:52%;--mt:31%;--mw:46%"><img src="images/qu.jpg" alt=""><figcaption>QUARTET ADVENTURE</figcaption></figure>
-  </div>
-  <div class="board lit" id="boardLit" aria-hidden="true"></div>
-  <div class="clues" id="clues" aria-hidden="true">
-    <span class="clue" style="--l:57%;--t:34%;--rot:-4deg;--ml:28%;--mt:15%">23:40 ─ 停電</span>
-    <span class="clue" style="--l:88%;--t:30%;--rot:3deg;--ml:62%;--mt:28%">鍵は内側から掛けられていた</span>
-    <span class="clue m-hide" style="--l:52%;--t:88%;--rot:-2deg">嘘をついているのは、一人じゃない</span>
-    <span class="clue" style="--l:92%;--t:62%;--rot:5deg;--ml:40%;--mt:40%">凶器は、まだ見つかっていない</span>
-    <span class="clue m-hide" style="--l:36%;--t:9%;--rot:-3deg">あなたは誰を演じている？</span>
-  </div>
-  <div class="torch" aria-hidden="true"></div>
-
-  <div class="stage-copy">
-    <div class="wrap">
-      <p class="kicker">Murder Mystery Studio</p>
-      <h1>
-        <span class="hero-jp"><span>役を<em>、</em></span><span>生きろ<em>。</em></span></span>
-        <span class="hero-en" lang="en">Live your role.</span>
-      </h1>
-      <p class="hero-lead">マーダーミステリー制作チーム <strong>STUDIO ARTS</strong>。<br>あなたが“主人公になる”物語を、全16作品UZUにて公開中。</p>
-      <div class="hero-cta">
-        <a class="btn btn-fill" href="#scenarios">View Works<i class="ar"></i></a>
-        <a class="btn" href="#vote">Contact<i class="ar"></i></a>
+  <div class="zone" id="zone">
+    <div class="zone-label" aria-hidden="true"><span class="rec"></span>Investigation Area<span class="tip" id="huntTip">枠の中をライトで照らして、手がかりを探せ</span></div>
+    <div class="zone-in">
+      <div class="board dim" id="boardDim" aria-hidden="true">
+        <svg class="strings" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+        <figure class="photo" style="--l:2%;--t:7%;--w:46%;--rot:-6deg;--ml:2%;--mt:6%;--mw:54%"><img src="images/8.jpg" alt=""><figcaption>黒煙街のエリー</figcaption></figure>
+        <figure class="photo" style="--l:53%;--t:3%;--w:40%;--rot:5deg;--ml:50%;--mt:2%;--mw:48%"><img src="images/10.jpg" alt=""><figcaption>CRADLE MEMOIR</figcaption></figure>
+        <figure class="photo" style="--l:28%;--t:37%;--w:42%;--rot:3deg;--ml:28%;--mt:34%;--mw:50%"><img src="images/11.jpg" alt=""><figcaption>ペトリコールを纏って</figcaption></figure>
+        <figure class="photo" style="--l:66%;--t:35%;--w:34%;--rot:-4deg;--ml:-6%;--mt:38%;--mw:44%"><img src="images/１０８.jpg" alt=""><figcaption>妖の國</figcaption></figure>
+        <figure class="photo" style="--l:1%;--t:63%;--w:38%;--rot:-3deg;--ml:4%;--mt:66%;--mw:46%"><img src="images/華恋.jpg" alt=""><figcaption>華唄こいこい、毒味で一杯</figcaption></figure>
+        <figure class="photo" style="--l:54%;--t:67%;--w:38%;--rot:-8deg;--ml:52%;--mt:64%;--mw:46%"><img src="images/qu.jpg" alt=""><figcaption>QUARTET ADVENTURE</figcaption></figure>
       </div>
+      <div class="board lit" id="boardLit" aria-hidden="true"></div>
+      <div class="clues" id="clues" aria-hidden="true">
+        <span class="clue" style="--l:24%;--t:33%;--rot:-4deg">23:40 ─ 停電</span>
+        <span class="clue" style="--l:74%;--t:29%;--rot:3deg;--ml:62%">鍵は内側から掛けられていた</span>
+        <span class="clue" style="--l:50%;--t:93%;--rot:-2deg">嘘をついているのは、一人じゃない</span>
+        <span class="clue" style="--l:80%;--t:61%;--rot:5deg;--ml:62%">凶器は、まだ見つかっていない</span>
+        <span class="clue" style="--l:32%;--t:4%;--rot:-3deg">あなたは誰を演じている？</span>
+      </div>
+      <div class="torch" aria-hidden="true"></div>
+    </div>
+    <i class="zc a"></i><i class="zc b"></i><i class="zc c"></i><i class="zc d"></i>
+    <div class="hunt" aria-live="polite">
+      <span class="hunt-dots" id="huntDots"><i></i><i></i><i></i><i></i><i></i></span>
+      <span>手がかり <b id="huntN">0</b> / 5</span>
+    </div>
+    <div class="hunt-msg" id="huntMsg" role="status">
+      <p>CASE CLOSED</p>
+      <p>すべての手がかりを発見。</p>
+      <p>あなたには探偵の素質があります。<br>続きは、物語の中で。</p>
+      <button type="button" id="huntClose">閉じる</button>
     </div>
   </div>
 
-  <div class="hunt" id="hunt" aria-live="polite">
-    <span id="huntTip">ライトを動かして、手がかりを探せ</span>
-    <span class="hunt-dots" id="huntDots"><i></i><i></i><i></i><i></i><i></i></span>
-    <span><b id="huntN">0</b> / <span id="huntT">5</span></span>
-  </div>
-  <div class="hunt-msg" id="huntMsg" role="status">
-    <p>CASE CLOSED</p>
-    <p>すべての手がかりを発見。</p>
-    <p>あなたには探偵の素質があります。<br>続きは、物語の中で。</p>
-    <button type="button" id="huntClose">閉じる</button>
+  <div class="stage-copy">
+    <div class="wrap">
+      <div class="copy">
+        <p class="kicker">Murder Mystery Studio</p>
+        <h1>
+          <span class="hero-jp"><span>役を<em>、</em></span><span>生きろ<em>。</em></span></span>
+          <span class="hero-en" lang="en">Live your role.</span>
+        </h1>
+        <p class="hero-lead">マーダーミステリー制作チーム <strong>STUDIO ARTS</strong>。<br>あなたが“主人公になる”物語を、全16作品UZUにて公開中。</p>
+        <div class="hero-cta">
+          <a class="btn btn-fill" href="#scenarios">View Works<i class="ar"></i></a>
+          <a class="btn" href="#vote">Contact<i class="ar"></i></a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -520,33 +571,44 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       <h2 class="sh-jp">シナリオ一覧</h2>
       <p class="sh-en">Works</p>
     </div>
+  </div>
+  <div class="helix" id="helix" aria-hidden="true">
+    <div class="helix-sticky">
+      <div class="helix-core"></div>
+      <div class="helix-scene"><div class="helix-cyl" id="cyl"></div></div>
+      <div class="helix-info" id="hinfo"><p class="h-no"></p><h3></h3><p class="h-desc"></p><p class="s-tags"></p></div>
+      <div class="helix-prog"><span><b id="hcur">01</b> / <span id="htot">06</span></span><i><u id="hbar"></u></i></div>
+      <p class="helix-cue" id="hcue">SCROLL ─ 螺旋を降りる</p>
+    </div>
+  </div>
+  <div class="wrap">
     <ul class="slist" id="slist">
-      <li class="srow rv" data-img="images/8.jpg">
+      <li class="srow " data-img="images/8.jpg">
         <span class="s-no">No.01</span>
         <div><img class="s-thumb" src="images/8.jpg" alt="黒煙街のエリー キービジュアル" loading="lazy"><h3 class="s-title">黒煙街のエリー</h3><p class="s-desc">煤煙けぶる機械仕掛けの街。少女が銃口で切り拓く、駆け引きの物語。</p></div>
         <p class="s-tags"><span>スチームパンク</span><span>駆け引き×RP</span><span>特殊RP</span></p>
       </li>
-      <li class="srow rv" data-img="images/10.jpg">
+      <li class="srow " data-img="images/10.jpg">
         <span class="s-no">No.02</span>
         <div><img class="s-thumb" src="images/10.jpg" alt="CRADLE MEMOIR キービジュアル" loading="lazy"><h3 class="s-title">CRADLE MEMOIR</h3><p class="s-desc">凶器は、呪い。深き黒の揺籃で綴られる、哀しき回想録。</p></div>
         <p class="s-tags"><span>ゴシック</span><span>王道推理</span></p>
       </li>
-      <li class="srow rv" data-img="images/11.jpg">
+      <li class="srow " data-img="images/11.jpg">
         <span class="s-no">No.03</span>
         <div><img class="s-thumb" src="images/11.jpg" alt="ペトリコールを纏って キービジュアル" loading="lazy"><h3 class="s-title">ペトリコールを纏って</h3><p class="s-desc">雨上がりの匂いに包まれて。アンニュイな青年が抱える、静かな真実。</p></div>
         <p class="s-tags"><span>アンニュイ</span><span>エモーショナル</span></p>
       </li>
-      <li class="srow rv" data-img="images/１０８.jpg">
+      <li class="srow " data-img="images/１０８.jpg">
         <span class="s-no">No.04</span>
         <div><img class="s-thumb" src="images/１０８.jpg" alt="妖の國 キービジュアル" loading="lazy"><h3 class="s-title">妖の國<small>百八夜と泡沫の結び</small></h3><p class="s-desc">百八の夜を越え、泡沫の結びへ。幻想の街に咲く、ネオンと桜のマダミス。</p></div>
         <p class="s-tags"><span>和風</span><span>サイバーパンク</span><span>RP・物語重視</span></p>
       </li>
-      <li class="srow rv" data-img="images/華恋.jpg">
+      <li class="srow " data-img="images/華恋.jpg">
         <span class="s-no">No.05</span>
         <div><img class="s-thumb" src="images/華恋.jpg" alt="華唄こいこい、毒味で一杯 キービジュアル" loading="lazy"><h3 class="s-title">華唄こいこい、毒味で一杯</h3><p class="s-desc">花札に込めた恋と、毒の一杯。2人で紡ぐ、艶やかな駆け引き物語。</p></div>
         <p class="s-tags"><span>ペアマダミス</span><span>和風</span><span>駆け引き</span></p>
       </li>
-      <li class="srow rv" data-img="images/qu.jpg">
+      <li class="srow " data-img="images/qu.jpg">
         <span class="s-no">No.06</span>
         <div><img class="s-thumb" src="images/qu.jpg" alt="QUARTET ADVENTURE キービジュアル" loading="lazy"><h3 class="s-title">QUARTET ADVENTURE</h3><p class="s-desc">四重奏が奏でる、冒険と謎の旋律。最新作、絶賛公開中。</p></div>
         <p class="s-tags"><span class="new">NEW</span><span>冒険</span></p>
@@ -557,7 +619,6 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       <a class="btn" href="https://uzu.app/" target="_blank" rel="noopener">UZUで作品を見る<i class="ar"></i></a>
     </div>
   </div>
-  <div class="float" id="float" aria-hidden="true"><img src="images/8.jpg" alt=""></div>
 </section>
 
 <!-- NOTICE -->
@@ -622,89 +683,79 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- Stage: spotlight + clue hunt ---------- */
-  const stage = document.getElementById('stage');
+  /* ---------- Stage: investigation area ---------- */
+  const zone = document.getElementById('zone');
   const dim = document.getElementById('boardDim');
   const lit = document.getElementById('boardLit');
   lit.innerHTML = dim.innerHTML;
 
-  // red strings between photo pins
   const drawStrings = () => {
-    const photos = [...dim.querySelectorAll('.photo')];
-    const r = stage.getBoundingClientRect();
-    const pins = photos.map(p => {
+    const r = zone.getBoundingClientRect();
+    const pins = [...dim.querySelectorAll('.photo')].map(p => {
       const b = p.getBoundingClientRect();
       return [((b.left + b.width / 2) - r.left) / r.width * 100, (b.top - r.top) / r.height * 100];
     });
     const pairs = [[0, 1], [0, 2], [2, 3], [2, 4], [2, 5], [1, 3]];
     const svg = pairs.map(([a, b]) => `<line x1="${pins[a][0]}" y1="${pins[a][1]}" x2="${pins[b][0]}" y2="${pins[b][1]}"/>`).join('');
-    document.querySelectorAll('.strings').forEach(s => s.innerHTML = svg);
+    zone.querySelectorAll('.strings').forEach(el => el.innerHTML = svg);
   };
 
-  const clues = [...document.querySelectorAll('.clue')];
+  const clues = [...zone.querySelectorAll('.clue')];
   const dots = [...document.querySelectorAll('#huntDots i')];
   const nEl = document.getElementById('huntN');
-  const tEl = document.getElementById('huntT');
   const tipEl = document.getElementById('huntTip');
   const msg = document.getElementById('huntMsg');
   document.getElementById('huntClose').addEventListener('click', () => msg.classList.remove('show'));
   const found = new Set();
-  let pos = { x: 0, y: 0 }, target = { x: 0, y: 0 }, radius = 190, userDriven = false, idleT = 0, t0 = performance.now();
-
-  const visibleClues = () => clues.filter(c => c.offsetParent !== null);
-  const setTotal = () => {
-    const n = visibleClues().length;
-    tEl.textContent = n;
-    dots.forEach((d, i) => d.hidden = i >= n);
-  };
+  let pos = null, target = { x: 0, y: 0 }, radius = 170, userDriven = false, lastInput = 0;
+  const t0 = performance.now();
 
   const measure = () => {
-    const r = stage.getBoundingClientRect();
-    radius = r.width < 640 ? 130 : 190;
-    stage.style.setProperty('--r', radius + 'px');
-    if (!pos.x) { pos.x = target.x = r.width * .68; pos.y = target.y = r.height * .4; }
+    const r = zone.getBoundingClientRect();
+    radius = Math.max(110, Math.min(170, r.width * .24));
+    zone.style.setProperty('--r', radius + 'px');
+    if (!pos) pos = { x: r.width * .6, y: r.height * .4 };
     drawStrings();
-    setTotal();
   };
 
-  const move = (cx, cy) => {
-    const r = stage.getBoundingClientRect();
+  const setUser = (on) => { userDriven = on; zone.classList.toggle('active', on); };
+  const aim = (cx, cy) => {
+    const r = zone.getBoundingClientRect();
     target.x = cx - r.left; target.y = cy - r.top;
-    userDriven = true; idleT = performance.now();
+    setUser(true); lastInput = performance.now();
   };
-  stage.addEventListener('pointermove', e => move(e.clientX, e.clientY));
-  stage.addEventListener('touchmove', e => { const t = e.touches[0]; move(t.clientX, t.clientY); }, { passive: true });
-  stage.addEventListener('pointerleave', () => { userDriven = false; });
+  zone.addEventListener('pointermove', e => { if (!msg.contains(e.target)) aim(e.clientX, e.clientY); });
+  zone.addEventListener('pointerleave', () => setUser(false));
+  zone.addEventListener('touchstart', e => { const t = e.touches[0]; aim(t.clientX, t.clientY); }, { passive: true });
+  zone.addEventListener('touchmove', e => { const t = e.touches[0]; aim(t.clientX, t.clientY); }, { passive: true });
+  zone.addEventListener('touchend', () => setTimeout(() => setUser(false), 1200));
 
   const tick = now => {
-    const r = stage.getBoundingClientRect();
+    const r = zone.getBoundingClientRect();
     if (r.bottom > 0 && r.top < innerHeight) {
-      if (!userDriven || now - idleT > 3500) {
-        userDriven = false;
-        if (!reduce) {
-          const t = (now - t0) / 1000;
-          target.x = r.width * (.66 + .2 * Math.sin(t * .35));
-          target.y = r.height * (r.width < 640 ? .24 + .12 * Math.sin(t * .6) : .42 + .26 * Math.sin(t * .5 + 1));
-        }
+      if (userDriven && now - lastInput > 4000) setUser(false);
+      if (!userDriven && !reduce) {
+        const t = (now - t0) / 1000;
+        target.x = r.width * (.5 + .32 * Math.sin(t * .37));
+        target.y = r.height * (.48 + .34 * Math.sin(t * .53 + 1));
       }
-      pos.x += (target.x - pos.x) * .12;
-      pos.y += (target.y - pos.y) * .12;
-      stage.style.setProperty('--x', pos.x + 'px');
-      stage.style.setProperty('--y', pos.y + 'px');
-
+      pos.x += (target.x - pos.x) * (userDriven ? .25 : .06);
+      pos.y += (target.y - pos.y) * (userDriven ? .25 : .06);
+      zone.style.setProperty('--x', pos.x + 'px');
+      zone.style.setProperty('--y', pos.y + 'px');
       clues.forEach((c, i) => {
         if (found.has(i)) return;
         const b = c.getBoundingClientRect();
         const d = Math.hypot(b.left + b.width / 2 - r.left - pos.x, b.top + b.height / 2 - r.top - pos.y);
         c.style.opacity = Math.max(0, 1 - d / radius).toFixed(2);
-        if (userDriven && d < radius * .4 && c.offsetParent !== null) {
+        if (userDriven && d < radius * .42) {
           found.add(i);
           c.classList.add('found');
-          const n = found.size, total = visibleClues().length;
+          const n = found.size;
           nEl.textContent = n;
           dots.forEach((dt, k) => dt.classList.toggle('on', k < n));
-          tipEl.textContent = n >= total ? '事件解決' : '手がかりを発見';
-          if (n >= total) setTimeout(() => msg.classList.add('show'), 500);
+          tipEl.textContent = n >= clues.length ? '事件解決' : `手がかりを発見（残り ${clues.length - n}）`;
+          if (n >= clues.length) setTimeout(() => msg.classList.add('show'), 500);
         }
       });
     }
@@ -714,7 +765,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
   addEventListener('load', measure);
   measure();
   requestAnimationFrame(tick);
-  if (matchMedia('(hover: none)').matches) tipEl.textContent = '画面をなぞって、手がかりを探せ';
+  if (matchMedia('(hover: none)').matches) tipEl.textContent = '枠の中をなぞって、手がかりを探せ';
 
   /* ---------- Redactions: tap to reveal ---------- */
   document.querySelectorAll('.redact').forEach(el => el.addEventListener('click', () => el.classList.toggle('open')));
@@ -725,22 +776,98 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     c.setAttribute('aria-pressed', on);
   }));
 
-  /* ---------- Scenario hover image ---------- */
-  const fl = document.getElementById('float');
-  const flImg = fl.querySelector('img');
-  let fx = 0, fy = 0, tx = 0, ty = 0, raf = 0;
-  const follow = () => { fx += (tx - fx) * .18; fy += (ty - fy) * .18; fl.style.left = fx + 'px'; fl.style.top = fy + 'px'; raf = requestAnimationFrame(follow); };
-  document.querySelectorAll('.srow').forEach(row => {
-    row.addEventListener('pointerenter', e => {
-      if (e.pointerType !== 'mouse') return;
-      flImg.src = row.dataset.img;
-      tx = fx = e.clientX + 48; ty = fy = e.clientY;
-      fl.classList.add('show');
-      if (!raf) follow();
+  /* ---------- Scenarios: spiral staircase ---------- */
+  const helix = document.getElementById('helix');
+  if (!reduce && helix) {
+    const scen = document.getElementById('scenarios');
+    const rows = [...document.querySelectorAll('.srow')];
+    const n = rows.length;
+    const cyl = document.getElementById('cyl');
+    const info = document.getElementById('hinfo');
+    const hcur = document.getElementById('hcur');
+    const hbar = document.getElementById('hbar');
+    const hcue = document.getElementById('hcue');
+    const pad = k => String(k).padStart(2, '0');
+    document.getElementById('htot').textContent = pad(n);
+    scen.classList.add('helix-on');
+    scen.style.setProperty('--n', n);
+    const STEP = 56;            // degrees between works
+    const TREADS = 7;           // stair treads between two works
+    const data = rows.map(row => ({
+      img: row.dataset.img,
+      no: row.querySelector('.s-no').textContent,
+      title: row.querySelector('.s-title').innerHTML,
+      desc: row.querySelector('.s-desc').textContent,
+      tags: row.querySelector('.s-tags').innerHTML,
+    }));
+    const cards = data.map(d => {
+      const a = document.createElement('a');
+      a.className = 'h-card';
+      a.href = 'https://uzu.app/'; a.target = '_blank'; a.rel = 'noopener'; a.tabIndex = -1;
+      a.innerHTML = `<img src="${d.img}" alt="" loading="lazy"><span><em>${d.no}</em><em>UZU</em></span>`;
+      cyl.appendChild(a);
+      return a;
     });
-    row.addEventListener('pointermove', e => { tx = e.clientX + 48; ty = e.clientY; });
-    row.addEventListener('pointerleave', () => { fl.classList.remove('show'); cancelAnimationFrame(raf); raf = 0; });
-  });
+    const steps = [];
+    for (let k = -TREADS * 2; k <= (n - 1) * TREADS + TREADS * 2; k++) {
+      const el = document.createElement('i');
+      el.className = 'h-step';
+      cyl.appendChild(el);
+      steps.push({ el, k });
+    }
+    let R = 0, H = 0, cur = 0, active = -1;
+    const layout = () => {
+      const w = innerWidth, mobile = w <= 900;
+      const cw = mobile ? Math.min(w * .7, 380) : Math.min(w * .3, 470);
+      helix.style.setProperty('--cw', cw + 'px');
+      helix.style.setProperty('--cx', mobile ? '50%' : '64%');
+      cyl.style.top = mobile ? '34%' : '48%';
+      R = cw * (mobile ? .95 : 1.08);
+      H = cw * (mobile ? .62 : .56);
+      cards.forEach((c, i) => c.style.transform = `translateY(${i * H}px) rotateY(${i * STEP}deg) translateZ(${R}px)`);
+      steps.forEach(({ el, k }) => {
+        const f = k / TREADS;
+        el.style.transform = `translateY(${f * H + cw * .36}px) rotateY(${f * STEP}deg) translateZ(${R * .62}px) rotateX(90deg)`;
+      });
+    };
+    const show = i => {
+      if (i === active) return;
+      active = i;
+      info.classList.add('swap');
+      setTimeout(() => {
+        const d = data[i];
+        info.innerHTML = `<p class="h-no">${d.no}</p><h3>${d.title}</h3><p class="h-desc">${d.desc}</p><p class="s-tags">${d.tags}</p>`;
+        info.classList.remove('swap');
+      }, 220);
+      hcur.textContent = pad(i + 1);
+    };
+    const frame = () => {
+      const r = helix.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < innerHeight) {
+        const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+        cur += (p - cur) * .09;
+        const f = cur * (n - 1);
+        cyl.style.transform = `translateZ(${-R}px) translateY(${-f * H}px) rotateY(${-f * STEP}deg)`;
+        cards.forEach((c, i) => {
+          const d = Math.abs(i - f);
+          c.style.opacity = Math.max(0, 1 - d * .42).toFixed(3);
+          c.style.filter = `brightness(${Math.max(.35, 1 - d * .4).toFixed(3)})`;
+        });
+        steps.forEach(({ el, k }) => {
+          const d = Math.abs(k / TREADS - f);
+          el.style.opacity = Math.max(0, 1 - d * .38).toFixed(3);
+        });
+        show(Math.min(n - 1, Math.round(f)));
+        hbar.style.width = (cur * 100).toFixed(2) + '%';
+        hcue.style.opacity = cur > .9 ? 0 : 1;
+      }
+      requestAnimationFrame(frame);
+    };
+    addEventListener('resize', layout);
+    layout();
+    show(0);
+    requestAnimationFrame(frame);
+  }
 
   /* ---------- Vote ---------- */
   const LINES = [
