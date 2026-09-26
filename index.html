@@ -244,19 +244,11 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
 .s-tags .new{border-color:var(--brass);color:var(--brass)}
 .s-thumb{display:none}
 .helix{display:none;position:relative}
-.helix-on .helix{display:block;height:calc(var(--n,6) * 70vh + 100vh)}
+.helix-on .helix{display:block;height:calc(var(--n,6) * 60vh + 100vh)}
 .helix-on .slist{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .helix-sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
-.helix-core{position:absolute;left:var(--cx,64%);top:0;bottom:0;width:1px;margin-left:-.5px;
-  background:linear-gradient(transparent,rgba(201,168,106,.55) 30%,rgba(201,168,106,.55) 70%,transparent);box-shadow:0 0 30px 6px rgba(201,168,106,.12)}
-.helix-scene{position:absolute;inset:0;perspective:1600px;perspective-origin:var(--cx,64%) 46%}
-.helix-cyl{position:absolute;left:var(--cx,64%);top:48%;width:0;height:0;transform-style:preserve-3d;will-change:transform}
-.h-card{position:absolute;display:block;width:var(--cw);left:calc(var(--cw) / -2);top:calc(var(--cw) * -.3);
-  background:#f1ebdf;padding:6px 6px 26px;box-shadow:0 30px 60px rgba(0,0,0,.55);backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.h-card img{width:100%;aspect-ratio:16/9;object-fit:cover}
-.h-card span{position:absolute;left:10px;right:10px;bottom:4px;font-family:var(--type);font-size:11px;letter-spacing:.1em;color:#3a332b;display:flex;justify-content:space-between}
-.h-step{position:absolute;width:calc(var(--cw) * .34);height:calc(var(--cw) * .16);left:calc(var(--cw) * -.17);top:calc(var(--cw) * -.08);
-  border:1px solid rgba(201,168,106,.32);background:linear-gradient(90deg,rgba(201,168,106,.1),rgba(201,168,106,.02))}
+.helix-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.helix-canvas.hover{cursor:pointer}
 .helix-info{position:absolute;left:var(--gutter);top:50%;transform:translateY(-50%);width:min(400px,30vw);z-index:2}
 .helix-info .h-no{font-family:var(--type);font-size:13px;letter-spacing:.14em;color:var(--brass)}
 .helix-info h3{font-family:var(--jp);font-weight:800;font-size:clamp(28px,3.2vw,46px);line-height:1.3;letter-spacing:.06em;margin-top:10px;text-wrap:balance}
@@ -574,8 +566,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
   </div>
   <div class="helix" id="helix" aria-hidden="true">
     <div class="helix-sticky">
-      <div class="helix-core"></div>
-      <div class="helix-scene"><div class="helix-cyl" id="cyl"></div></div>
+      <canvas class="helix-canvas" id="hcanvas"></canvas>
       <div class="helix-info" id="hinfo"><p class="h-no"></p><h3></h3><p class="h-desc"></p><p class="s-tags"></p></div>
       <div class="helix-prog"><span><b id="hcur">01</b> / <span id="htot">06</span></span><i><u id="hbar"></u></i></div>
       <p class="helix-cue" id="hcue">SCROLL ─ 螺旋を降りる</p>
@@ -679,6 +670,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -776,13 +768,14 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     c.setAttribute('aria-pressed', on);
   }));
 
-  /* ---------- Scenarios: spiral staircase ---------- */
+  /* ---------- Scenarios: WebGL spiral staircase ---------- */
   const helix = document.getElementById('helix');
-  if (!reduce && helix) {
+  const canWebGL = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } })();
+  if (!reduce && helix && window.THREE && canWebGL) {
     const scen = document.getElementById('scenarios');
     const rows = [...document.querySelectorAll('.srow')];
     const n = rows.length;
-    const cyl = document.getElementById('cyl');
+    const canvas = document.getElementById('hcanvas');
     const info = document.getElementById('hinfo');
     const hcur = document.getElementById('hcur');
     const hbar = document.getElementById('hbar');
@@ -791,79 +784,211 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     document.getElementById('htot').textContent = pad(n);
     scen.classList.add('helix-on');
     scen.style.setProperty('--n', n);
-    const STEP = 56;            // degrees between works
-    const TREADS = 7;           // stair treads between two works
+
     const data = rows.map(row => ({
       img: row.dataset.img,
+      url: row.dataset.url || 'https://uzu.app/',
       no: row.querySelector('.s-no').textContent,
       title: row.querySelector('.s-title').innerHTML,
       desc: row.querySelector('.s-desc').textContent,
       tags: row.querySelector('.s-tags').innerHTML,
     }));
-    const cards = data.map(d => {
-      const a = document.createElement('a');
-      a.className = 'h-card';
-      a.href = 'https://uzu.app/'; a.target = '_blank'; a.rel = 'noopener'; a.tabIndex = -1;
-      a.innerHTML = `<img src="${d.img}" alt="" loading="lazy"><span><em>${d.no}</em><em>UZU</em></span>`;
-      cyl.appendChild(a);
-      return a;
-    });
-    const steps = [];
-    for (let k = -TREADS * 2; k <= (n - 1) * TREADS + TREADS * 2; k++) {
-      const el = document.createElement('i');
-      el.className = 'h-step';
-      cyl.appendChild(el);
-      steps.push({ el, k });
-    }
-    let R = 0, H = 0, cur = 0, active = -1;
-    const layout = () => {
-      const w = innerWidth, mobile = w <= 900;
-      const cw = mobile ? Math.min(w * .7, 380) : Math.min(w * .3, 470);
-      helix.style.setProperty('--cw', cw + 'px');
-      helix.style.setProperty('--cx', mobile ? '50%' : '64%');
-      cyl.style.top = mobile ? '34%' : '48%';
-      R = cw * (mobile ? .95 : 1.08);
-      H = cw * (mobile ? .62 : .56);
-      cards.forEach((c, i) => c.style.transform = `translateY(${i * H}px) rotateY(${i * STEP}deg) translateZ(${R}px)`);
-      steps.forEach(({ el, k }) => {
-        const f = k / TREADS;
-        el.style.transform = `translateY(${f * H + cw * .36}px) rotateY(${f * STEP}deg) translateZ(${R * .62}px) rotateX(90deg)`;
-      });
+
+    const STEP = THREE.MathUtils.degToRad(52);   // rotation between works
+    const R = 2.2;                               // cylinder radius
+    const CW = 1.7, CH = CW * 9 / 16;            // card size
+    const H = 0.78;                              // drop between works
+    const TREADS = 8;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setClearColor(0x151311, 1);
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x151311, 4.5, 10);
+    const camera = new THREE.PerspectiveCamera(34, 1, 1, 40);
+    const world = new THREE.Group();
+    scene.add(world);
+    const spiral = new THREE.Group();
+    world.add(spiral);
+
+    // bend a plane onto the cylinder surface
+    const bent = (w, h, radius) => {
+      const g = new THREE.PlaneGeometry(w, h, 32, 1);
+      const pos = g.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const a = pos.getX(i) / radius;
+        pos.setXYZ(i, Math.sin(a) * radius, pos.getY(i), Math.cos(a) * radius);
+      }
+      g.computeVertexNormals();
+      return g;
     };
+
+    const cardGeo = bent(CW, CH, R);
+    const frameGeo = bent(CW + .09, CH + .2, R - .05);
+    frameGeo.translate(0, -.045, 0);
+    const loader = new THREE.TextureLoader();
+    const vert = `
+      uniform float uTime; uniform float uVel;
+      varying vec2 vUv;
+      void main(){
+        vUv = uv;
+        vec3 p = position;
+        p.z += sin(p.y * 6.0 + uTime * 2.0) * uVel * 0.06;
+        p.x += sin(p.y * 4.0 + uTime) * uVel * 0.03;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+      }`;
+    const frag = `
+      uniform sampler2D uTex; uniform float uBright; uniform float uVel; uniform float uHover; uniform float uReady;
+      varying vec2 vUv;
+      void main(){
+        vec2 uv = (vUv - .5) * (1.0 - uHover * .06) + .5;
+        float s = uVel * .012;
+        vec3 c = vec3(texture2D(uTex, uv + vec2(s, 0.)).r, texture2D(uTex, uv).g, texture2D(uTex, uv - vec2(s, 0.)).b);
+        c = mix(vec3(.08,.07,.06), c, uReady);
+        float vig = smoothstep(.95, .35, length(vUv - .5));
+        c *= mix(.75, 1.0, vig) * uBright;
+        gl_FragColor = vec4(c, 1.0);
+      }`;
+
+    const cards = data.map((d, i) => {
+      const pivot = new THREE.Group();
+      pivot.rotation.y = i * STEP;
+      pivot.position.y = -i * H;
+      const uniforms = { uTex: { value: null }, uTime: { value: 0 }, uVel: { value: 0 }, uBright: { value: 1 }, uHover: { value: 0 }, uReady: { value: 0 } };
+      uniforms.uTex.value = loader.load(d.img, t => { t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; uniforms.uReady.value = 1; });
+      const card = new THREE.Mesh(cardGeo, new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag, side: THREE.FrontSide }));
+      card.userData.i = i;
+      const frameMat = new THREE.MeshBasicMaterial({ color: 0xf1ebdf, side: THREE.FrontSide, polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2 });
+      const frame = new THREE.Mesh(frameGeo, frameMat);
+      card.renderOrder = 1;
+      pivot.add(frame, card);
+      spiral.add(pivot);
+      return { card, frameMat, uniforms, pivot };
+    });
+
+    // stair treads
+    const treadCount = (n - 1) * TREADS + TREADS * 6;
+    const treads = new THREE.InstancedMesh(new THREE.BoxGeometry(.62, .025, .42),
+      new THREE.MeshBasicMaterial({ color: 0xc9a86a, transparent: true, opacity: .38 }), treadCount);
+    const dummy = new THREE.Object3D();
+    for (let k = 0; k < treadCount; k++) {
+      const f = (k - TREADS * 3) / TREADS;
+      const a = f * STEP, rr = R * .6;
+      dummy.position.set(Math.sin(a) * rr, -f * H - CH * .62, Math.cos(a) * rr);
+      dummy.rotation.set(0, a, 0);
+      dummy.updateMatrix();
+      treads.setMatrixAt(k, dummy.matrix);
+    }
+    spiral.add(treads);
+
+    // glowing core
+    const core = new THREE.Mesh(new THREE.CylinderGeometry(.012, .012, 60, 8), new THREE.MeshBasicMaterial({ color: 0xe7cd98 }));
+    world.add(core);
+    const glowMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
+      fragmentShader: 'varying vec2 vUv; void main(){ float d = abs(vUv.x - .5) * 2.; float a = pow(1. - d, 3.) * .22 * smoothstep(0., .3, vUv.y) * smoothstep(1., .7, vUv.y); gl_FragColor = vec4(.79,.66,.42, a); }'
+    });
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 14), glowMat);
+    world.add(glow);
+
+    // drifting dust
+    const DUST = 420;
+    const dustPos = new Float32Array(DUST * 3);
+    for (let i = 0; i < DUST; i++) {
+      const a = Math.random() * Math.PI * 2, rr = .3 + Math.random() * R * 1.6;
+      dustPos.set([Math.sin(a) * rr, (Math.random() - .5) * 12, Math.cos(a) * rr], i * 3);
+    }
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+    const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xe7cd98, size: .022, transparent: true, opacity: .55, depthWrite: false, blending: THREE.AdditiveBlending }));
+    world.add(dust);
+
+    const ray = new THREE.Raycaster();
+    const mouse = new THREE.Vector2(9, 9);
+    let hovered = -1;
+    canvas.addEventListener('pointermove', e => {
+      const b = canvas.getBoundingClientRect();
+      mouse.set((e.clientX - b.left) / b.width * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1);
+    });
+    canvas.addEventListener('pointerleave', () => mouse.set(9, 9));
+    canvas.addEventListener('click', () => { if (hovered >= 0) window.open(data[hovered].url, '_blank', 'noopener'); });
+
+    let mobile = false;
+    const layout = () => {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      mobile = w <= 900;
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      const dist = mobile ? 10.5 : 7.2;
+      camera.position.set(0, mobile ? .45 : .3, R + dist - R);
+      camera.lookAt(0, 0, 0);
+      camera.updateProjectionMatrix();
+      // put the axis at 64% of the width on desktop, centre on phones
+      const vis = 2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
+      world.position.x = mobile ? 0 : vis * .15;
+      world.position.y = mobile ? vis * .0 + .75 : 0;
+      glow.position.z = -.01;
+    };
+
+    let active = -1;
     const show = i => {
       if (i === active) return;
       active = i;
       info.classList.add('swap');
       setTimeout(() => {
-        const d = data[i];
+        const d = data[active];
         info.innerHTML = `<p class="h-no">${d.no}</p><h3>${d.title}</h3><p class="h-desc">${d.desc}</p><p class="s-tags">${d.tags}</p>`;
         info.classList.remove('swap');
       }, 220);
       hcur.textContent = pad(i + 1);
     };
+
+    let cur = 0, last = 0, vel = 0;
+    const clock = new THREE.Clock();
     const frame = () => {
       const r = helix.getBoundingClientRect();
       if (r.bottom > 0 && r.top < innerHeight) {
+        const t = clock.getElapsedTime();
         const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
-        cur += (p - cur) * .09;
+        cur += (p - cur) * .08;
+        vel += ((cur - last) * 60 - vel) * .15;
+        last = cur;
         const f = cur * (n - 1);
-        cyl.style.transform = `translateZ(${-R}px) translateY(${-f * H}px) rotateY(${-f * STEP}deg)`;
+        spiral.rotation.y = -f * STEP;
+        spiral.position.y = f * H;
+        dust.rotation.y = t * .03 - f * STEP * .3;
+        const dp = dust.geometry.attributes.position;
+        for (let i = 0; i < DUST; i++) {
+          let y = dp.getY(i) + .002;
+          if (y > 6) y = -6;
+          dp.setY(i, y);
+        }
+        dp.needsUpdate = true;
+
+        ray.setFromCamera(mouse, camera);
+        const hit = ray.intersectObjects(cards.map(c => c.card))[0];
+        hovered = hit ? hit.object.userData.i : -1;
+        canvas.classList.toggle('hover', hovered >= 0);
+
+        const v = Math.min(1.5, Math.abs(vel) * 6);
         cards.forEach((c, i) => {
           const d = Math.abs(i - f);
-          c.style.opacity = Math.max(0, 1 - d * .42).toFixed(3);
-          c.style.filter = `brightness(${Math.max(.35, 1 - d * .4).toFixed(3)})`;
+          const b = Math.max(0.05, 1 - d * .38);
+          c.uniforms.uBright.value = b;
+          c.uniforms.uTime.value = t;
+          c.uniforms.uVel.value = v;
+          c.uniforms.uHover.value += ((hovered === i ? 1 : 0) - c.uniforms.uHover.value) * .15;
+          c.frameMat.color.setScalar(b).multiply(new THREE.Color(0xf1ebdf));
         });
-        steps.forEach(({ el, k }) => {
-          const d = Math.abs(k / TREADS - f);
-          el.style.opacity = Math.max(0, 1 - d * .38).toFixed(3);
-        });
+        renderer.render(scene, camera);
         show(Math.min(n - 1, Math.round(f)));
         hbar.style.width = (cur * 100).toFixed(2) + '%';
         hcue.style.opacity = cur > .9 ? 0 : 1;
       }
       requestAnimationFrame(frame);
     };
-    addEventListener('resize', layout);
+    new ResizeObserver(layout).observe(canvas);
     layout();
     show(0);
     requestAnimationFrame(frame);
