@@ -907,18 +907,11 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       }`;
 
     /* mat board artwork: paper grain + per-work caption and foil, in several colour themes */
-    // ebony mat; the foil (lines, number, logo) comes in several finishes
-    const EBONY = { bg: '#171412', age: 'rgba(0,0,0,.35)', title: '#ece3d0', bevel: [.3, .27, .23] };
+    // ebony mat; the foil (lines, number, logo) takes each key visual's accent colour
     const MAT_THEMES = {
-      gold:      { ...EBONY, line: '#b8955a', sub: '#c9a86a', foil: [.9, .72, .4],   sheen: .6 },
-      champagne: { ...EBONY, line: '#d6c49c', sub: '#e0d0ac', foil: [.94, .87, .7],  sheen: .6 },
-      platinum:  { ...EBONY, line: '#b7bbc2', sub: '#c8ccd3', foil: [.84, .86, .9],  sheen: .7 },
-      copper:    { ...EBONY, line: '#b9744f', sub: '#cc8b66', foil: [.88, .52, .34], sheen: .6 },
-      bronze:    { ...EBONY, line: '#86703f', sub: '#9c8552', foil: [.62, .52, .3],  sheen: .45 },
-      bone:      { ...EBONY, line: '#d8cfbd', sub: '#d8cfbd', foil: [.86, .83, .77], sheen: .5 },
-      accent:    { ...EBONY, auto: true, line: '#c3a468', sub: '#cfb27a', foil: [.88, .7, .38], sheen: .6 },
+      accent: { bg: '#171412', age: 'rgba(0,0,0,.35)', title: '#ece3d0', bevel: [.3, .27, .23], auto: true, line: '#c3a468', sub: '#cfb27a', foil: [.88, .7, .38], sheen: .6 },
     };
-    let matTheme = 'gold';
+    let matTheme = 'accent';
     const MW = 1600, MH = Math.round(1600 * FH / FW);
     const px = (x, y) => [x / FW * MW, y / FH * MH];            // mat units -> canvas px (from top-left)
     // neutral grain drawn once, laid over any mat colour
@@ -1032,7 +1025,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       };
       uniforms.uTex.value = loader.load(d.img, t => {
         t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; uniforms.uReady.value = 1;
-        try { d.accent = accentOf(t.image); if (MAT_THEMES[matTheme].auto) window.setMatTheme(matTheme); } catch (e) {}
+        try { d.accent = accentOf(t.image); if (cards[i]) applyMat(cards[i]); } catch (e) {}
       });
       const card = new THREE.Mesh(printGeo, new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag }));
       card.userData.i = i;
@@ -1041,18 +1034,19 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       return { card, pivot, uniforms, mctx, gctx, matTex, goldTex, d };
     });
 
+    const applyMat = c => {
+      const th = MAT_THEMES[matTheme];
+      drawMat(c.mctx, c.gctx, c.d);
+      c.matTex.needsUpdate = c.goldTex.needsUpdate = true;
+      if (th.auto && c.d.accent) { const k = new THREE.Color(c.d.accent); c.uniforms.uFoil.value.set(k.r, k.g, k.b); }
+      else c.uniforms.uFoil.value.set(...th.foil);
+      c.uniforms.uBevel.value.set(...th.bevel);
+      c.uniforms.uSheen.value = th.sheen;
+    };
     window.setMatTheme = name => {
       if (!MAT_THEMES[name]) return;
       matTheme = name;
-      const th = MAT_THEMES[name];
-      cards.forEach(c => {
-        drawMat(c.mctx, c.gctx, c.d);
-        c.matTex.needsUpdate = c.goldTex.needsUpdate = true;
-        if (th.auto && c.d.accent) { const k = new THREE.Color(c.d.accent); c.uniforms.uFoil.value.set(k.r, k.g, k.b); }
-        else c.uniforms.uFoil.value.set(...th.foil);
-        c.uniforms.uBevel.value.set(...th.bevel);
-        c.uniforms.uSheen.value = th.sheen;
-      });
+      cards.forEach(applyMat);
     };
     window.setMatTheme(window.MAT_THEME || matTheme);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => window.setMatTheme(matTheme));
