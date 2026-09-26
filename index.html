@@ -857,9 +857,11 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       return g;
     };
 
-    const cardGeo = bent(CW, CH, R);
-    const frameGeo = bent(CW + .09, CH + .2, R - .05);
-    frameGeo.translate(0, -.045, 0);
+    // one surface = paper print with the key visual inside (border never drifts)
+    const BS = .045, BT = .055, BB = .145;       // side / top / bottom paper margins
+    const FW = CW + BS * 2, FH = CH + BT + BB;
+    const cardGeo = bent(FW, FH, R);
+    cardGeo.translate(0, (BB - BT) / -2, 0);
     const loader = new THREE.TextureLoader();
     const vert = `
       uniform float uTime; uniform float uVel;
@@ -867,16 +869,24 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       void main(){
         vUv = uv;
         vec3 p = position;
-        p.z += sin(p.y * 6.0 + uTime * 2.0) * uVel * 0.06;
-        p.x += sin(p.y * 4.0 + uTime) * uVel * 0.03;
+        p.z += sin(p.y * 6.0 + uTime * 2.0) * uVel * 0.025;
+        p.x += sin(p.y * 4.0 + uTime) * uVel * 0.012;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
       }`;
     const frag = `
       uniform sampler2D uTex; uniform float uBright; uniform float uVel; uniform float uHover; uniform float uReady;
+      uniform vec4 uRect;   // image area in the print: x0, y0, x1, y1 (uv)
       varying vec2 vUv;
       void main(){
-        vec2 uv = (vUv - .5) * (1.0 - uHover * .06) + .5;
-        float s = uVel * .012;
+        vec2 iuv = (vUv - uRect.xy) / (uRect.zw - uRect.xy);
+        vec2 edge = step(vec2(0.), iuv) * step(iuv, vec2(1.));
+        if (edge.x * edge.y < .5) {
+          float shade = mix(.9, 1.0, vUv.y);
+          gl_FragColor = vec4(vec3(.945, .922, .875) * shade * uBright, 1.0);
+          return;
+        }
+        vec2 uv = (iuv - .5) * (1.0 - uHover * .06) + .5;
+        float s = uVel * .004;
         vec3 c = vec3(texture2D(uTex, uv + vec2(s, 0.)).r, texture2D(uTex, uv).g, texture2D(uTex, uv - vec2(s, 0.)).b);
         c = mix(vec3(.08,.07,.06), c, uReady);
         float vig = smoothstep(.95, .35, length(vUv - .5));
@@ -888,16 +898,13 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       const pivot = new THREE.Group();
       pivot.rotation.y = i * STEP;
       pivot.position.y = -i * H;
-      const uniforms = { uTex: { value: null }, uTime: { value: 0 }, uVel: { value: 0 }, uBright: { value: 1 }, uHover: { value: 0 }, uReady: { value: 0 } };
+      const uniforms = { uRect: { value: new THREE.Vector4(BS / FW, BB / FH, 1 - BS / FW, 1 - BT / FH) }, uTex: { value: null }, uTime: { value: 0 }, uVel: { value: 0 }, uBright: { value: 1 }, uHover: { value: 0 }, uReady: { value: 0 } };
       uniforms.uTex.value = loader.load(d.img, t => { t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; uniforms.uReady.value = 1; });
       const card = new THREE.Mesh(cardGeo, new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag, side: THREE.FrontSide }));
       card.userData.i = i;
-      const frameMat = new THREE.MeshBasicMaterial({ color: 0xf1ebdf, side: THREE.FrontSide, polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2 });
-      const frame = new THREE.Mesh(frameGeo, frameMat);
-      card.renderOrder = 1;
-      pivot.add(frame, card);
+      pivot.add(card);
       spiral.add(pivot);
-      return { card, frameMat, uniforms, pivot };
+      return { card, uniforms, pivot };
     });
 
     // stair treads
@@ -1006,7 +1013,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
         hovered = hit ? hit.object.userData.i : -1;
         canvas.classList.toggle('hover', hovered >= 0);
 
-        const v = Math.min(1.5, Math.abs(vel) * 6);
+        const v = Math.min(1, Math.abs(vel) * 4);
         cards.forEach((c, i) => {
           const d = Math.abs(i - f);
           const b = Math.max(0.05, 1 - d * .38);
@@ -1014,7 +1021,6 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
           c.uniforms.uTime.value = t;
           c.uniforms.uVel.value = v;
           c.uniforms.uHover.value += ((hovered === i ? 1 : 0) - c.uniforms.uHover.value) * .15;
-          c.frameMat.color.setScalar(b).multiply(new THREE.Color(0xf1ebdf));
         });
         renderer.render(scene, camera);
         show(Math.min(n - 1, Math.round(f)));
