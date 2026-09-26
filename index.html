@@ -249,12 +249,6 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
 .helix-sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .helix-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .helix-canvas.hover{cursor:pointer}
-.h-float-title{position:absolute;left:-999px;top:0;z-index:3;pointer-events:none;transform:translate(-50%,-50%);white-space:nowrap;
-  font-family:var(--jp);font-weight:800;font-size:clamp(30px,4vw,60px);letter-spacing:.12em;color:var(--bone);
-  text-shadow:0 10px 40px rgba(0,0,0,.85),0 0 3px rgba(0,0,0,.7)}
-.h-float-title span{display:inline-block;opacity:0;filter:blur(14px);transform:translateY(16px) scale(1.3);transition:opacity .25s,filter .25s,transform .25s}
-.h-float-title:not(.on) span{transition-delay:0s!important}
-.h-float-title.on span{opacity:1;filter:blur(0);transform:none;transition:opacity .8s var(--ease),filter .8s var(--ease),transform 1s var(--ease)}
 .helix-info{position:absolute;left:var(--gutter);top:50%;transform:translateY(-50%);width:min(400px,30vw);z-index:2}
 .helix-info .h-no{font-family:var(--type);font-size:13px;letter-spacing:.14em;color:var(--brass)}
 .helix-info h3{font-family:var(--jp);font-weight:800;font-size:clamp(28px,3.2vw,46px);line-height:1.3;letter-spacing:.06em;margin-top:10px;text-wrap:balance}
@@ -573,7 +567,6 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
   <div class="helix" id="helix" aria-hidden="true">
     <div class="helix-sticky">
       <canvas class="helix-canvas" id="hcanvas"></canvas>
-      <div class="h-float-title" id="hFloatTitle" aria-hidden="true"></div>
       <div class="helix-info" id="hinfo"><p class="h-no"></p><h3></h3><p class="h-desc"></p><p class="s-tags"></p></div>
       <div class="helix-prog"><span><b id="hcur">01</b> / <span id="htot">06</span></span><i><u id="hbar"></u></i></div>
       <p class="helix-cue" id="hcue">SCROLL ─ 螺旋を降りる</p>
@@ -822,25 +815,18 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     const hcur = document.getElementById('hcur');
     const hbar = document.getElementById('hbar');
     const hcue = document.getElementById('hcue');
-    const ftitle = document.getElementById('hFloatTitle');
     const pad = k => String(k).padStart(2, '0');
     document.getElementById('htot').textContent = pad(n);
     scen.classList.add('helix-on');
     scen.style.setProperty('--n', n);
-
-    // hover effects (can be combined): camera / peek / title / stairs / recede / dust
-    window.HOVER_FX = window.HOVER_FX || { camera: true, recede: true };
-    const fx = k => !!window.HOVER_FX[k];
 
     const data = rows.map(row => ({
       img: row.dataset.img,
       url: row.dataset.url || 'https://uzu.app/',
       no: row.querySelector('.s-no').textContent,
       title: row.querySelector('.s-title').innerHTML,
-      plain: row.querySelector('.s-title').firstChild.textContent.trim(),
       desc: row.querySelector('.s-desc').textContent,
       tags: row.querySelector('.s-tags').innerHTML,
-      tagList: [...row.querySelectorAll('.s-tags span')].map(t => t.textContent),
     }));
 
     const STEP = THREE.MathUtils.degToRad(52);   // rotation between works
@@ -851,9 +837,6 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     const BS = .045, BT = .055, BB = .145;       // paper margins: side / top / bottom
     const FW = CW + BS * 2, FH = CH + BT + BB;
     const TY = (BB - BT) / -2;                   // keeps the image centred on the pivot
-    const CORNER = new THREE.Vector2(FW / 2, -FH / 2 + TY);
-    const CURL_MAX = .62, RC = .08;
-    const DIAG = new THREE.Vector2(-1, 1).normalize();
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     renderer.setClearColor(0x151311, 1);
@@ -865,172 +848,170 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     const spiral = new THREE.Group();
     world.add(spiral);
 
-    // flat print (bent onto the cylinder in the vertex shader so a corner can curl)
-    const printGeo = new THREE.PlaneGeometry(FW, FH, 48, 30);
+    // print = paper border + key visual on one curved surface
+    const printGeo = new THREE.PlaneGeometry(FW, FH, 32, 1);
     printGeo.translate(0, TY, 0);
-    // bent copy used only for picking
-    const pickGeo = new THREE.PlaneGeometry(FW, FH, 32, 1);
-    pickGeo.translate(0, TY, 0);
-    const pp = pickGeo.attributes.position;
-    for (let i = 0; i < pp.count; i++) { const a = pp.getX(i) / R; pp.setXYZ(i, Math.sin(a) * R, pp.getY(i), Math.cos(a) * R); }
-    const pickMat = new THREE.MeshBasicMaterial({ visible: false });
-
+    const pg = printGeo.attributes.position;
+    for (let i = 0; i < pg.count; i++) { const a = pg.getX(i) / R; pg.setXYZ(i, Math.sin(a) * R, pg.getY(i), Math.cos(a) * R); }
     const vert = `
-      uniform float uR; uniform float uTime; uniform float uVel; uniform float uCurl; uniform vec2 uCorner;
+      uniform float uTime; uniform float uVel;
       varying vec2 vUv;
       void main(){
         vUv = uv;
-        vec2 p = position.xy; float z = 0.;
-        vec2 D = normalize(vec2(-1., 1.));
-        if (uCurl > .001) {
-          float s = dot(p - uCorner, D);
-          if (s < uCurl) {
-            float u = uCurl - s, phi = u / ${RC.toFixed(3)}, s2;
-            if (phi < 3.14159265) { s2 = uCurl - sin(phi) * ${RC.toFixed(3)}; z = (1. - cos(phi)) * ${RC.toFixed(3)}; }
-            else { s2 = uCurl + (u - 3.14159265 * ${RC.toFixed(3)}); z = ${(2 * RC).toFixed(3)}; }
-            p += D * (s2 - s);
-          }
-        }
-        z += sin(p.y * 6. + uTime * 2.) * uVel * .025;
-        p.x += sin(p.y * 4. + uTime) * uVel * .012;
-        float a = p.x / uR;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(sin(a) * (uR + z), p.y, cos(a) * (uR + z), 1.);
+        vec3 p = position;
+        p.z += sin(p.y * 6.0 + uTime * 2.0) * uVel * 0.025;
+        p.x += sin(p.y * 4.0 + uTime) * uVel * 0.012;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
       }`;
     const frag = `
-      uniform sampler2D uTex; uniform sampler2D uBack;
-      uniform float uBright; uniform float uVel; uniform float uReady; uniform float uBlur; uniform float uCurl; uniform float uTy;
-      uniform vec4 uRect; uniform vec2 uCorner; uniform vec2 uSize;
+      uniform sampler2D uTex; uniform float uBright; uniform float uVel; uniform float uReady; uniform float uGlow;
+      uniform vec4 uRect;
       varying vec2 vUv;
       void main(){
-        if (!gl_FrontFacing) {
-          // back of the print: sample where the folded flap lands so the memo reads the right way
-          vec2 D = normalize(vec2(-1., 1.));
-          vec2 p = (vUv - .5) * uSize + vec2(0., uTy);
-          float L = uCurl - 3.14159265 * ${RC.toFixed(3)} * .5;
-          vec2 pr = p + D * 2. * (L - dot(p - uCorner, D));
-          vec2 buv = (pr - vec2(0., uTy)) / uSize + .5;
-          gl_FragColor = vec4(texture2D(uBack, buv).rgb * uBright, 1.);
-          return;
-        }
         vec2 iuv = (vUv - uRect.xy) / (uRect.zw - uRect.xy);
         vec2 edge = step(vec2(0.), iuv) * step(iuv, vec2(1.));
         if (edge.x * edge.y < .5) {
-          gl_FragColor = vec4(vec3(.945, .922, .875) * mix(.9, 1., vUv.y) * uBright, 1.);
+          vec3 paper = vec3(.945, .922, .875) * mix(.9, 1., vUv.y);
+          paper += vec3(.25, .18, .06) * uGlow * (1. - vUv.y);   // warm light from the lit stairs below
+          gl_FragColor = vec4(paper * uBright, 1.);
           return;
         }
         float s = uVel * .004;
         vec3 c = vec3(texture2D(uTex, iuv + vec2(s, 0.)).r, texture2D(uTex, iuv).g, texture2D(uTex, iuv - vec2(s, 0.)).b);
-        if (uBlur > .01) {
-          vec3 acc = vec3(0.);
-          for (int x = -2; x <= 2; x++) for (int y = -2; y <= 2; y++)
-            acc += texture2D(uTex, iuv + vec2(float(x) * .5625, float(y)) * uBlur * .006).rgb;
-          c = mix(c, acc / 25., min(1., uBlur * 1.5));
-        }
         c = mix(vec3(.08,.07,.06), c, uReady);
         float vig = smoothstep(.95, .35, length(vUv - .5));
         c *= mix(.75, 1.0, vig) * uBright;
         gl_FragColor = vec4(c, 1.0);
       }`;
-
-    // handwritten memo on the back of each print
-    const BW = 1024, BH = Math.round(1024 * FH / FW);
-    const toCanvas = (x, y) => [(x / FW + .5) * BW, (1 - ((y - TY) / FH + .5)) * BH];
-    const drawBack = (ctx, d) => {
-      ctx.fillStyle = '#e7dfcc'; ctx.fillRect(0, 0, BW, BH);
-      ctx.strokeStyle = 'rgba(28,25,21,.08)'; ctx.lineWidth = 2;
-      for (let y = 40; y < BH; y += 38) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(BW, y); ctx.stroke(); }
-      const m = CORNER.clone().add(DIAG.clone().multiplyScalar(CURL_MAX * 1.12));
-      const [cx, cy] = toCanvas(m.x, m.y);
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.fillStyle = '#8b2431';
-      ctx.font = '700 22px "Courier Prime", monospace';
-      ctx.fillText(d.no + '  ／  MEMO', -130, -62);
-      ctx.fillStyle = '#2a251f';
-      ctx.font = '34px "Zen Kurenaido", sans-serif';
-      const t = d.plain.length > 9 ? d.plain.slice(0, 9) + '…' : d.plain;
-      ctx.fillText(t, -130, -18);
-      ctx.font = '24px "Zen Kurenaido", sans-serif';
-      ctx.fillStyle = '#4a4238';
-      ctx.fillText(d.tagList.slice(0, 2).join(' ／ '), -130, 22);
-      ctx.fillText('UZUにて公開中', -130, 58);
-      ctx.strokeStyle = 'rgba(139,36,49,.7)'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.ellipse(-60, 50, 100, 22, -.05, 0, Math.PI * 2); ctx.stroke();
-      ctx.restore();
-    };
-
     const loader = new THREE.TextureLoader();
     const cards = data.map((d, i) => {
       const pivot = new THREE.Group();
       pivot.rotation.y = i * STEP;
       pivot.position.y = -i * H;
-      const bc = document.createElement('canvas'); bc.width = BW; bc.height = BH;
-      const bctx = bc.getContext('2d');
-      drawBack(bctx, d);
-      const backTex = new THREE.CanvasTexture(bc);
-      backTex.minFilter = THREE.LinearFilter; backTex.generateMipmaps = false;
       const uniforms = {
-        uTex: { value: null }, uBack: { value: backTex },
-        uR: { value: R }, uTime: { value: 0 }, uVel: { value: 0 }, uCurl: { value: 0 }, uBlur: { value: 0 },
-        uBright: { value: 1 }, uReady: { value: 0 }, uTy: { value: TY },
+        uTex: { value: null }, uTime: { value: 0 }, uVel: { value: 0 }, uBright: { value: 1 }, uReady: { value: 0 }, uGlow: { value: 0 },
         uRect: { value: new THREE.Vector4(BS / FW, BB / FH, 1 - BS / FW, 1 - BT / FH) },
-        uCorner: { value: CORNER }, uSize: { value: new THREE.Vector2(FW, FH) },
       };
       uniforms.uTex.value = loader.load(d.img, t => { t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; uniforms.uReady.value = 1; });
-      const print = new THREE.Mesh(printGeo, new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag, side: THREE.DoubleSide }));
-      print.frustumCulled = false;
-      const pick = new THREE.Mesh(pickGeo, pickMat);
-      pick.userData.i = i;
-      const anchor = new THREE.Object3D();
-      anchor.position.set(0, 0, R);
-      pivot.add(print, pick, anchor);
+      const card = new THREE.Mesh(printGeo, new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag }));
+      card.userData.i = i;
+      pivot.add(card);
       spiral.add(pivot);
-      return { print, pick, anchor, pivot, uniforms, bctx, backTex, d, curl: 0 };
+      return { card, pivot, uniforms };
     });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => cards.forEach(c => { drawBack(c.bctx, c.d); c.backTex.needsUpdate = true; }));
 
-    // stair treads (per-tread colour so they can light up)
+    /* stairs: treads + a pool of light under each one */
     const treadCount = (n - 1) * TREADS + TREADS * 6;
-    const treadMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .42, depthWrite: false });
-    const treads = new THREE.InstancedMesh(new THREE.BoxGeometry(.62, .025, .42), treadMat, treadCount);
-    const dummy = new THREE.Object3D();
     const treadF = [];
-    const BRASS = new THREE.Color(0xb8985c), LIT = new THREE.Color(0xfff1c8), tmpC = new THREE.Color();
+    const treadMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .45, depthWrite: false });
+    const treads = new THREE.InstancedMesh(new THREE.BoxGeometry(.62, .025, .42), treadMat, treadCount);
+    const poolMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `
+        varying vec2 vUv; varying vec3 vC;
+        void main(){
+          vUv = uv;
+          #ifdef USE_INSTANCING_COLOR
+            vC = instanceColor;
+          #else
+            vC = vec3(0.);
+          #endif
+          gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.);
+        }`,
+      fragmentShader: `
+        varying vec2 vUv; varying vec3 vC;
+        void main(){
+          vec2 q = (vUv - .5) * vec2(1., 1.6);
+          float a = exp(-dot(q, q) * 7.);
+          gl_FragColor = vec4(vC * a, a);
+        }`
+    });
+    const pools = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.5, 1.1), poolMat, treadCount);
+    const dummy = new THREE.Object3D();
+    const BRASS = new THREE.Color(0xa88a52), HOT = new THREE.Color(0xfff4d6), WARM = new THREE.Color(0xf0c878), BLACK = new THREE.Color(0);
+    const tmpC = new THREE.Color();
     for (let k = 0; k < treadCount; k++) {
       const f = (k - TREADS * 3) / TREADS;
       treadF.push(f);
-      const a = f * STEP, rr = R * .6;
-      dummy.position.set(Math.sin(a) * rr, -f * H - CH * .62, Math.cos(a) * rr);
+      const a = f * STEP, rr = R * .6, y = -f * H - CH * .62;
+      dummy.position.set(Math.sin(a) * rr, y, Math.cos(a) * rr);
       dummy.rotation.set(0, a, 0);
       dummy.updateMatrix();
       treads.setMatrixAt(k, dummy.matrix);
       treads.setColorAt(k, BRASS);
+      dummy.position.set(Math.sin(a) * rr, y + .018, Math.cos(a) * rr);
+      dummy.rotation.set(-Math.PI / 2, 0, -a);
+      dummy.updateMatrix();
+      pools.setMatrixAt(k, dummy.matrix);
+      pools.setColorAt(k, BLACK);
     }
-    spiral.add(treads);
+    spiral.add(treads, pools);
 
     // glowing core
-    world.add(new THREE.Mesh(new THREE.CylinderGeometry(.012, .012, 60, 8), new THREE.MeshBasicMaterial({ color: 0xe7cd98 })));
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0xe7cd98 });
+    world.add(new THREE.Mesh(new THREE.CylinderGeometry(.012, .012, 60, 8), coreMat));
+    const glowU = { uBoost: { value: 0 } };
     const glow = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 14), new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: glowU, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
-      fragmentShader: 'varying vec2 vUv; void main(){ float d = abs(vUv.x - .5) * 2.; float a = pow(1. - d, 3.) * .22 * smoothstep(0., .3, vUv.y) * smoothstep(1., .7, vUv.y); gl_FragColor = vec4(.79,.66,.42, a); }'
+      fragmentShader: 'uniform float uBoost; varying vec2 vUv; void main(){ float d = abs(vUv.x - .5) * 2.; float a = pow(1. - d, 3.) * (.22 + uBoost * .5) * smoothstep(0., .3, vUv.y) * smoothstep(1., .7, vUv.y); gl_FragColor = vec4(.85,.7,.45, a); }'
     }));
     glow.position.z = -.01;
     world.add(glow);
 
-    // drifting dust (the first GATHER particles can trace the hovered print)
-    const DUST = 460, GATHER = 180;
-    const dustBase = new Float32Array(DUST * 3);
-    for (let i = 0; i < DUST; i++) {
-      const a = Math.random() * Math.PI * 2, rr = .3 + Math.random() * R * 1.6;
-      dustBase.set([Math.sin(a) * rr, (Math.random() - .5) * 12, Math.cos(a) * rr], i * 3);
-    }
-    const dustGeo = new THREE.BufferGeometry();
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustBase.slice(), 3));
-    const dustMat = new THREE.PointsMaterial({ color: 0xe7cd98, size: .022, transparent: true, opacity: .55, depthWrite: false, blending: THREE.AdditiveBlending });
-    const dust = new THREE.Points(dustGeo, dustMat);
-    dust.frustumCulled = false;
-    world.add(dust);
+    /* light motes: soft glowing points that drift, twinkle and can trace the hovered print */
+    const moteVert = `
+      attribute float aSize; attribute float aSeed; attribute float aGather;
+      uniform float uTime; uniform float uPx; uniform float uGather;
+      varying float vA; varying float vHot;
+      void main(){
+        vec3 p = position;
+        float g = aGather * uGather;
+        p.x += sin(uTime * .35 + aSeed * 31.) * .08 * (1. - g);
+        p.z += cos(uTime * .29 + aSeed * 17.) * .08 * (1. - g);
+        vec4 mv = modelViewMatrix * vec4(p, 1.);
+        float tw = .55 + .45 * sin(uTime * (.8 + aSeed * 1.6) + aSeed * 60.);
+        vA = tw * mix(1., 1.6, g);
+        vHot = g;
+        gl_PointSize = aSize * uPx * (1. + g * .6) * (6.5 / -mv.z);
+        gl_Position = projectionMatrix * mv;
+      }`;
+    const moteFrag = `
+      uniform float uAlpha;
+      varying float vA; varying float vHot;
+      void main(){
+        float d = length(gl_PointCoord - .5) * 2.;
+        float halo = exp(-d * d * 4.);
+        float core = exp(-d * d * 40.);
+        vec3 col = mix(vec3(.95, .74, .42), vec3(1., .97, .88), core + vHot * .4);
+        float a = (halo * .55 + core) * vA * uAlpha;
+        if (a < .003) discard;
+        gl_FragColor = vec4(col * a, a);
+      }`;
+    const makeMotes = (count, sizeMin, sizeMax, spread, alpha, gatherCount) => {
+      const base = new Float32Array(count * 3), size = new Float32Array(count), seed = new Float32Array(count), gath = new Float32Array(count);
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2, rr = spread[0] + Math.random() * (spread[1] - spread[0]);
+        base.set([Math.sin(a) * rr, (Math.random() - .5) * 12, Math.cos(a) * rr], i * 3);
+        const r = Math.pow(Math.random(), 2.2);
+        size[i] = sizeMin + r * (sizeMax - sizeMin);
+        seed[i] = Math.random();
+        gath[i] = i < gatherCount ? 1 : 0;
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(base.slice(), 3));
+      geo.setAttribute('aSize', new THREE.BufferAttribute(size, 1));
+      geo.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
+      geo.setAttribute('aGather', new THREE.BufferAttribute(gath, 1));
+      const uniforms = { uTime: { value: 0 }, uPx: { value: 1 }, uGather: { value: 0 }, uAlpha: { value: alpha } };
+      const pts = new THREE.Points(geo, new THREE.ShaderMaterial({ uniforms, vertexShader: moteVert, fragmentShader: moteFrag, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+      pts.frustumCulled = false;
+      world.add(pts);
+      return { pts, base, uniforms, seed, count, gatherCount };
+    };
+    const motes = makeMotes(520, 3, 14, [.3, R * 1.6], .9, 220);
+    const bokeh = makeMotes(26, 60, 150, [R * 1.2, R * 2.1], .06, 0);
+
     const perim = (t, out) => {
       const P = 2 * (FW + FH); let d = ((t % 1) + 1) % 1 * P;
       let x, y;
@@ -1038,8 +1019,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       else if ((d -= FW) < FH) { x = FW / 2; y = FH / 2 - d; }
       else if ((d -= FH) < FW) { x = FW / 2 - d; y = -FH / 2; }
       else { d -= FW; x = -FW / 2; y = -FH / 2 + d; }
-      const a = x / R, rr = R + .03;
-      return out.set(Math.sin(a) * rr, y + TY, Math.cos(a) * rr);
+      return out.set(x, y + TY, 0);
     };
 
     const ray = new THREE.Raycaster();
@@ -1052,21 +1032,20 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     canvas.addEventListener('pointerleave', () => mouse.set(9, 9));
     canvas.addEventListener('click', () => { if (hovered >= 0) window.open(data[hovered].url, '_blank', 'noopener'); });
 
-    let mobile = false;
-    const basePos = new THREE.Vector3(), baseLook = new THREE.Vector3();
     const layout = () => {
-      const w = canvas.clientWidth, h = canvas.clientHeight;
-      mobile = w <= 900;
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      const w = canvas.clientWidth, h = canvas.clientHeight, mobile = w <= 900;
+      const pr = Math.min(devicePixelRatio, 2);
+      renderer.setPixelRatio(pr);
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       const dist = mobile ? 10.5 : 7.2;
-      basePos.set(0, mobile ? .45 : .3, dist);
-      baseLook.set(0, 0, 0);
+      camera.position.set(0, mobile ? .45 : .3, dist);
+      camera.lookAt(0, 0, 0);
       camera.updateProjectionMatrix();
       const vis = 2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
       world.position.x = mobile ? 0 : vis * .15;
       world.position.y = mobile ? .75 : 0;
+      motes.uniforms.uPx.value = bokeh.uniforms.uPx.value = pr * h / 900;
     };
 
     let active = -1;
@@ -1082,22 +1061,12 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       hcur.textContent = pad(i + 1);
     };
 
-    let titleFor = -1;
-    const setTitle = i => {
-      if (i === titleFor) return;
-      titleFor = i;
-      if (i < 0) { ftitle.classList.remove('on'); return; }
-      ftitle.classList.remove('on');
-      ftitle.innerHTML = [...data[i].plain].map((ch, k) => `<span style="transition-delay:${k * 45}ms">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
-      void ftitle.offsetWidth;
-      ftitle.classList.add('on');
-    };
-
     let cur = 0, last = 0, vel = 0;
-    let camK = 0, recK = 0, stK = 0, stT = 0, dustK = 0;
-    const v3 = new THREE.Vector3(), v3b = new THREE.Vector3(), look = new THREE.Vector3();
+    let recK = 0, stK = 0, stT = 0, dustK = 0;
+    const v3 = new THREE.Vector3();
     const clock = new THREE.Clock();
     let prevT = 0;
+    const RUN = 3;   // stairs light up from this many works below the print
     const frame = () => {
       const r = helix.getBoundingClientRect();
       if (r.bottom > 0 && r.top < innerHeight) {
@@ -1109,79 +1078,87 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
         const f = cur * (n - 1);
         spiral.rotation.y = -f * STEP;
         spiral.position.y = f * H;
-        dust.rotation.y = t * .03 - f * STEP * .3;
 
         ray.setFromCamera(mouse, camera);
-        const hit = ray.intersectObjects(cards.map(c => c.pick))[0];
+        const hit = ray.intersectObjects(cards.map(c => c.card))[0];
+        const prev = hovered;
         hovered = hit ? hit.object.userData.i : -1;
         if (hovered >= 0) focus = hovered;
+        if (hovered >= 0 && hovered !== prev) stT = 0;
         canvas.classList.toggle('hover', hovered >= 0);
         const on = hovered >= 0 ? 1 : 0;
-        camK += ((fx('camera') ? on : 0) - camK) * .06;
-        recK += ((fx('recede') ? on : 0) - recK) * .08;
-        dustK += ((fx('dust') ? on : 0) - dustK) * .05;
-        if (fx('stairs') && on) { stT += dt; stK += (1 - stK) * .1; } else { stK += (0 - stK) * .06; if (stK < .01) stT = 0; }
-
-        // 1. camera: dolly toward the focused print
-        spiral.updateMatrixWorld();
-        cards[focus].anchor.getWorldPosition(v3);
-        look.copy(baseLook).lerp(v3, camK * .85);
-        camera.position.copy(basePos).lerp(v3b.copy(v3).add(new THREE.Vector3(0, .1, 3.4)), camK * .45);
-        camera.lookAt(look);
+        recK += (on - recK) * .08;
+        dustK += (on - dustK) * .045;
+        if (on) { stT += dt; stK += (1 - stK) * .15; } else stK += (0 - stK) * .05;
 
         const v = Math.min(1, Math.abs(vel) * 4);
         cards.forEach((c, i) => {
           const d = Math.abs(i - f);
           let b = Math.max(0.05, 1 - d * .38);
-          if (i !== focus) b *= 1 - .82 * recK;               // 5. recede
+          if (i !== focus) b *= 1 - .82 * recK;        // everything else sinks back
           c.uniforms.uBright.value = b;
           c.uniforms.uTime.value = t;
           c.uniforms.uVel.value = v;
-          c.uniforms.uBlur.value = i === focus ? 0 : camK;  // 1. depth of field
-          c.curl += (((fx('peek') && hovered === i) ? 1 : 0) - c.curl) * .08;   // 2. peek
-          c.uniforms.uCurl.value = c.curl * CURL_MAX;
+          c.uniforms.uGlow.value = i === focus ? stK * Math.min(1, stT * 1.2) : 0;
         });
 
-        // 4. stairs light up from the step below toward the print
-        treadMat.opacity = .42 * (1 - .65 * recK);
+        // stairs: a wave of light races up to the print, each tread flares then keeps a warm glow
+        treadMat.opacity = .45 * (1 - .55 * recK) + .4 * stK;
+        const head = stT * 2.6;                           // wave front, in works per second
         for (let k = 0; k < treadCount; k++) {
-          const rel = (focus + 1) - treadF[k];
-          let lit = 0;
-          if (stK > .01 && rel >= -.05 && rel <= 1.1) lit = Math.min(1, Math.max(0, (stT * 1.3 - (1 - rel)) * 4)) * stK;
-          treads.setColorAt(k, tmpC.copy(BRASS).lerp(LIT, lit));
+          const rel = (focus + RUN) - treadF[k];          // 0 = far below, RUN = under the print
+          let flare = 0, keep = 0;
+          if (stK > .005 && rel >= 0 && rel <= RUN + .15) {
+            const since = head - rel;
+            if (since > 0) { flare = Math.exp(-since * 3.2); keep = Math.min(1, since * 4) * (.35 + .65 * (rel / RUN)); }
+          }
+          const lit = Math.min(1, (flare * 1.2 + keep * .7)) * stK;
+          treads.setColorAt(k, tmpC.copy(BRASS).lerp(flare > .3 ? HOT : WARM, lit));
+          pools.setColorAt(k, tmpC.copy(WARM).multiplyScalar((flare * 1.6 + keep * .55) * stK));
         }
         treads.instanceColor.needsUpdate = true;
+        pools.instanceColor.needsUpdate = true;
+        glowU.uBoost.value = stK * (.4 + .6 * Math.exp(-Math.max(0, stT - RUN / 2.6) * 2));
+        coreMat.color.setHex(0xe7cd98).multiplyScalar(1 + stK * .3);
 
-        // 6. dust traces the print outline
-        dustMat.opacity = .55 * (1 - .6 * recK) + .4 * dustK;
-        dustMat.size = .022 + .022 * dustK;
-        const dp = dust.geometry.attributes.position;
-        for (let i = 0; i < DUST; i++) {
-          let y = dustBase[i * 3 + 1] + .002;
+        // motes: drift upward; on hover the first group streams around the print in strands
+        [motes, bokeh].forEach(m => { m.uniforms.uTime.value = t; });
+        motes.uniforms.uGather.value = dustK;
+        motes.uniforms.uAlpha.value = .9 * (1 - .35 * recK) + .3 * dustK;
+        bokeh.uniforms.uAlpha.value = .06 * (1 - .5 * recK);
+        spiral.updateMatrixWorld();
+        motes.pts.updateMatrixWorld();
+        const dp = motes.pts.geometry.attributes.position;
+        for (let i = 0; i < motes.count; i++) {
+          let y = motes.base[i * 3 + 1] + .0025 * (.5 + motes.seed[i]);
           if (y > 6) y = -6;
-          dustBase[i * 3 + 1] = y;
-          if (i < GATHER && dustK > .01) {
-            perim(i / GATHER + t * .05, v3);
+          motes.base[i * 3 + 1] = y;
+          if (i < motes.gatherCount && dustK > .005) {
+            const strand = i % 4, sd = motes.seed[i];
+            perim(i / motes.gatherCount * .25 + strand * .25 + t * (.045 + strand * .006), v3);
+            const off = .02 + sd * .07;
+            const a = v3.x / R, rr = R + off;
+            v3.set(Math.sin(a) * rr, v3.y + (sd - .5) * .05, Math.cos(a) * rr);
             cards[focus].pivot.localToWorld(v3);
-            dust.worldToLocal(v3);
+            motes.pts.worldToLocal(v3);
+            const k = dustK * dustK * (3 - 2 * dustK);
             dp.setXYZ(i,
-              dustBase[i * 3] + (v3.x - dustBase[i * 3]) * dustK,
-              y + (v3.y - y) * dustK,
-              dustBase[i * 3 + 2] + (v3.z - dustBase[i * 3 + 2]) * dustK);
-          } else dp.setXYZ(i, dustBase[i * 3], y, dustBase[i * 3 + 2]);
+              motes.base[i * 3] + (v3.x - motes.base[i * 3]) * k,
+              y + (v3.y - y) * k,
+              motes.base[i * 3 + 2] + (v3.z - motes.base[i * 3 + 2]) * k);
+          } else dp.setXYZ(i, motes.base[i * 3], y, motes.base[i * 3 + 2]);
         }
         dp.needsUpdate = true;
+        const bp = bokeh.pts.geometry.attributes.position;
+        for (let i = 0; i < bokeh.count; i++) {
+          let y = bokeh.base[i * 3 + 1] + .0012;
+          if (y > 6) y = -6;
+          bokeh.base[i * 3 + 1] = y;
+          bp.setY(i, y);
+        }
+        bp.needsUpdate = true;
 
         renderer.render(scene, camera);
-
-        // 3. title rises in front of the print
-        setTitle(fx('title') && hovered >= 0 ? hovered : -1);
-        if (titleFor >= 0) {
-          cards[titleFor].anchor.getWorldPosition(v3).project(camera);
-          ftitle.style.left = ((v3.x + 1) / 2 * canvas.clientWidth) + 'px';
-          ftitle.style.top = ((1 - v3.y) / 2 * canvas.clientHeight + canvas.clientHeight * .12) + 'px';
-        }
-
         show(Math.min(n - 1, Math.round(f)));
         hbar.style.width = (cur * 100).toFixed(2) + '%';
         hcue.style.opacity = cur > .9 ? 0 : 1;
