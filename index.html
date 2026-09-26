@@ -825,6 +825,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       url: row.dataset.url || 'https://uzu.app/',
       no: row.querySelector('.s-no').textContent,
       title: row.querySelector('.s-title').innerHTML,
+      plainTitle: row.querySelector('.s-title').firstChild.textContent.trim(),
       desc: row.querySelector('.s-desc').textContent,
       tags: row.querySelector('.s-tags').innerHTML,
     }));
@@ -834,7 +835,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     const CW = 1.7, CH = CW * 9 / 16;            // image size
     const H = 0.78;                              // drop between works
     const TREADS = 8;
-    const BS = .045, BT = .055, BB = .145;       // paper margins: side / top / bottom
+    const BS = .06, BT = .07, BB = .19;          // mat margins: side / top / bottom
     const FW = CW + BS * 2, FH = CH + BT + BB;
     const TY = (BB - BT) / -2;                   // keeps the image centred on the pivot
 
@@ -864,41 +865,121 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
         gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
       }`;
     const frag = `
-      uniform sampler2D uTex; uniform float uBright; uniform float uVel; uniform float uReady; uniform float uGlow;
-      uniform vec4 uRect;
+      uniform sampler2D uTex; uniform sampler2D uMat; uniform sampler2D uGold;
+      uniform float uBright; uniform float uVel; uniform float uReady; uniform float uGlow; uniform float uAng;
+      uniform vec4 uRect; uniform vec2 uSize;
       varying vec2 vUv;
       void main(){
         vec2 iuv = (vUv - uRect.xy) / (uRect.zw - uRect.xy);
         vec2 edge = step(vec2(0.), iuv) * step(iuv, vec2(1.));
+        // light sweep that travels across the print as the spiral turns
+        float sweep = vUv.x * .8 + vUv.y * .35 - (.55 - uAng * .9);
         if (edge.x * edge.y < .5) {
-          vec3 paper = vec3(.945, .922, .875) * mix(.9, 1., vUv.y);
-          paper += vec3(.25, .18, .06) * uGlow * (1. - vUv.y);   // warm light from the lit stairs below
-          gl_FragColor = vec4(paper * uBright, 1.);
+          vec3 mat = texture2D(uMat, vUv).rgb;
+          float gold = texture2D(uGold, vUv).r;
+          // bevelled cut of the mat around the window
+          vec2 w = uSize;
+          vec2 q = (vUv - clamp(vUv, uRect.xy, uRect.zw)) * w;
+          float d = length(q);
+          float bevel = smoothstep(.018, .0, d);
+          float lit = dot(normalize(q + 1e-6), normalize(vec2(-1., 1.)));
+          mat *= 1. + bevel * lit * .09;
+          mat = mix(mat, vec3(.98, .96, .91), bevel * .45);
+          // gold foil: warm base + sharp glint on the sweep
+          vec3 foil = vec3(.86, .68, .36) * (.85 + .3 * vUv.y);
+          float glint = exp(-sweep * sweep * 90.);
+          mat = mix(mat, foil + vec3(1., .88, .6) * glint * 1.4, gold);
+          mat += vec3(.05, .045, .035) * exp(-sweep * sweep * 12.) * (1. - gold);   // satin sheen on the paper
+          mat += vec3(.25, .18, .06) * uGlow * (1. - vUv.y);                        // warm light from the lit stairs
+          gl_FragColor = vec4(mat * uBright, 1.);
           return;
         }
         float s = uVel * .004;
         vec3 c = vec3(texture2D(uTex, iuv + vec2(s, 0.)).r, texture2D(uTex, iuv).g, texture2D(uTex, iuv - vec2(s, 0.)).b);
         c = mix(vec3(.08,.07,.06), c, uReady);
         float vig = smoothstep(.95, .35, length(vUv - .5));
-        c *= mix(.75, 1.0, vig) * uBright;
+        vec2 e2 = min(iuv, 1. - iuv) * uSize;
+        float inner = smoothstep(.0, .035, min(e2.x * .6, e2.y));
+        c *= mix(.62, 1., inner);
+        c *= mix(.78, 1.0, vig) * uBright;
         gl_FragColor = vec4(c, 1.0);
       }`;
+
+    /* mat board artwork: shared paper grain + per-work caption and gold foil */
+    const MW = 1600, MH = Math.round(1600 * FH / FW);
+    const px = (x, y) => [x / FW * MW, y / FH * MH];            // mat units -> canvas px (from top-left)
+    const grain = document.createElement('canvas'); grain.width = MW; grain.height = MH;
+    {
+      const g = grain.getContext('2d');
+      g.fillStyle = '#eee6d6'; g.fillRect(0, 0, MW, MH);
+      const img = g.getImageData(0, 0, MW, MH), dd = img.data;
+      for (let i = 0; i < dd.length; i += 4) { const nz = (Math.random() - .5) * 14; dd[i] += nz; dd[i + 1] += nz; dd[i + 2] += nz * .8; }
+      g.putImageData(img, 0, 0);
+      g.globalAlpha = .06; g.strokeStyle = '#6b5a3e'; g.lineWidth = 1;
+      for (let i = 0; i < 700; i++) {
+        const x = Math.random() * MW, y = Math.random() * MH, a = Math.random() * Math.PI, l = 6 + Math.random() * 22;
+        g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a) * l * .5 + 3, y + Math.sin(a) * l * .5 - 3, x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
+      }
+      g.globalAlpha = 1;
+      const age = g.createRadialGradient(MW / 2, MH / 2, MH * .35, MW / 2, MH / 2, MW * .62);
+      age.addColorStop(0, 'rgba(120,90,40,0)'); age.addColorStop(1, 'rgba(120,90,40,.16)');
+      g.fillStyle = age; g.fillRect(0, 0, MW, MH);
+    }
+    const [wx, wy] = px(BS, BT), [ww, wh] = px(CW, CH);
+    const drawGoldLines = (g, color) => {
+      g.strokeStyle = color; g.fillStyle = color;
+      const o = 16;
+      g.lineWidth = 5; g.strokeRect(o, o, MW - o * 2, MH - o * 2);
+      g.lineWidth = 2; g.strokeRect(o + 10, o + 10, MW - (o + 10) * 2, MH - (o + 10) * 2);
+      g.lineWidth = 3; g.strokeRect(wx - 14, wy - 14, ww + 28, wh + 28);
+      [[o + 10, o + 10], [MW - o - 10, o + 10], [o + 10, MH - o - 10], [MW - o - 10, MH - o - 10]].forEach(([x, y]) => {
+        g.save(); g.translate(x, y); g.rotate(Math.PI / 4); g.fillRect(-9, -9, 18, 18); g.restore();
+      });
+    };
+    const drawMat = (g, gm, d) => {
+      g.drawImage(grain, 0, 0);
+      gm.fillStyle = '#000'; gm.fillRect(0, 0, MW, MH);
+      drawGoldLines(g, '#a8874c'); drawGoldLines(gm, '#fff');
+      const cy = wy + wh + (MH - wy - wh) * .52;
+      const title = d.plainTitle.length > 16 ? d.plainTitle.slice(0, 16) + '…' : d.plainTitle;
+      g.textBaseline = gm.textBaseline = 'middle';
+      g.fillStyle = '#2a241c'; g.textAlign = 'center';
+      g.font = '800 46px "Shippori Mincho B1", serif';
+      g.fillText(title, MW / 2, cy);
+      [[g, '#9a7a42'], [gm, '#fff']].forEach(([c, col]) => {
+        c.fillStyle = col;
+        c.font = '700 28px "Courier Prime", monospace';
+        c.textAlign = 'left'; c.fillText(d.no, wx, cy);
+        c.font = '600 26px "Cormorant Garamond", serif';
+        c.textAlign = 'right'; c.fillText('S T U D I O   A R T S', wx + ww, cy);
+      });
+    };
     const loader = new THREE.TextureLoader();
     const cards = data.map((d, i) => {
       const pivot = new THREE.Group();
       pivot.rotation.y = i * STEP;
       pivot.position.y = -i * H;
+      const mc = document.createElement('canvas'); mc.width = MW; mc.height = MH;
+      const gc = document.createElement('canvas'); gc.width = MW; gc.height = MH;
+      const mctx = mc.getContext('2d'), gctx = gc.getContext('2d');
+      drawMat(mctx, gctx, d);
+      const matTex = new THREE.CanvasTexture(mc), goldTex = new THREE.CanvasTexture(gc);
+      [matTex, goldTex].forEach(t => { t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; t.anisotropy = 4; });
       const uniforms = {
-        uTex: { value: null }, uTime: { value: 0 }, uVel: { value: 0 }, uBright: { value: 1 }, uReady: { value: 0 }, uGlow: { value: 0 },
+        uTex: { value: null }, uMat: { value: matTex }, uGold: { value: goldTex },
+        uTime: { value: 0 }, uVel: { value: 0 }, uBright: { value: 1 }, uReady: { value: 0 }, uGlow: { value: 0 }, uAng: { value: 0 },
         uRect: { value: new THREE.Vector4(BS / FW, BB / FH, 1 - BS / FW, 1 - BT / FH) },
+        uSize: { value: new THREE.Vector2(FW, FH) },
       };
       uniforms.uTex.value = loader.load(d.img, t => { t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; uniforms.uReady.value = 1; });
       const card = new THREE.Mesh(printGeo, new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag }));
       card.userData.i = i;
       pivot.add(card);
       spiral.add(pivot);
-      return { card, pivot, uniforms };
+      return { card, pivot, uniforms, mctx, gctx, matTex, goldTex, d };
     });
+
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => cards.forEach(c => { drawMat(c.mctx, c.gctx, c.d); c.matTex.needsUpdate = c.goldTex.needsUpdate = true; }));
 
     /* stairs: treads + a pool of light under each one */
     const treadCount = (n - 1) * TREADS + TREADS * 6;
@@ -1099,6 +1180,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
           c.uniforms.uBright.value = b;
           c.uniforms.uTime.value = t;
           c.uniforms.uVel.value = v;
+          c.uniforms.uAng.value = (i - f) * STEP;
           c.uniforms.uGlow.value = i === focus ? stK * Math.min(1, stT * 2.5) * .45 : 0;
         });
 
