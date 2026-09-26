@@ -867,6 +867,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
     const frag = `
       uniform sampler2D uTex; uniform sampler2D uMat; uniform sampler2D uGold;
       uniform float uBright; uniform float uVel; uniform float uReady; uniform float uGlow; uniform float uAng;
+      uniform vec3 uFoil; uniform vec3 uBevel; uniform float uSheen;
       uniform vec4 uRect; uniform vec2 uSize;
       varying vec2 vUv;
       void main(){
@@ -884,12 +885,12 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
           float bevel = smoothstep(.018, .0, d);
           float lit = dot(normalize(q + 1e-6), normalize(vec2(-1., 1.)));
           mat *= 1. + bevel * lit * .09;
-          mat = mix(mat, vec3(.98, .96, .91), bevel * .45);
+          mat = mix(mat, uBevel, bevel * .45);
           // gold foil: warm base + sharp glint on the sweep
-          vec3 foil = vec3(.86, .68, .36) * (.85 + .3 * vUv.y);
+          vec3 foil = uFoil * (.85 + .3 * vUv.y);
           float glint = exp(-sweep * sweep * 90.);
           mat = mix(mat, foil + vec3(1., .88, .6) * glint * 1.4, gold);
-          mat += vec3(.05, .045, .035) * exp(-sweep * sweep * 12.) * (1. - gold);   // satin sheen on the paper
+          mat += vec3(.05, .045, .035) * uSheen * exp(-sweep * sweep * 12.) * (1. - gold);   // satin sheen on the paper
           mat += vec3(.25, .18, .06) * uGlow * (1. - vUv.y);                        // warm light from the lit stairs
           gl_FragColor = vec4(mat * uBright, 1.);
           return;
@@ -905,25 +906,30 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
         gl_FragColor = vec4(c, 1.0);
       }`;
 
-    /* mat board artwork: shared paper grain + per-work caption and gold foil */
+    /* mat board artwork: paper grain + per-work caption and foil, in several colour themes */
+    const MAT_THEMES = {
+      ivory:    { bg: '#eee6d6', age: 'rgba(120,90,40,.16)',  line: '#a8874c', title: '#2a241c', sub: '#9a7a42', foil: [.86, .68, .36], bevel: [.98, .96, .91], sheen: 1 },
+      ebony:    { bg: '#171412', age: 'rgba(0,0,0,.35)',      line: '#b8955a', title: '#ece3d0', sub: '#c9a86a', foil: [.9, .72, .4],  bevel: [.3, .27, .23],   sheen: .6 },
+      forest:   { bg: '#1d2b24', age: 'rgba(0,0,0,.3)',       line: '#b89a5e', title: '#e8e0cc', sub: '#c6a96b', foil: [.84, .68, .4], bevel: [.3, .38, .33],   sheen: .6 },
+      midnight: { bg: '#161c2b', age: 'rgba(0,0,0,.32)',      line: '#aeb5c2', title: '#e6e8ee', sub: '#b9c0cc', foil: [.78, .8, .86], bevel: [.3, .34, .45],   sheen: .7 },
+      washi:    { bg: '#f3f0e8', age: 'rgba(60,50,40,.1)',    line: '#2a2622', title: '#1d1a17', sub: '#4a443d', foil: [.16, .14, .12], bevel: [1, .99, .96],   sheen: .8 },
+      auto:     { auto: true, line: '#c3a468', title: '#efe6d3', sub: '#cfb27a', foil: [.88, .7, .38], sheen: .6 },
+    };
+    let matTheme = 'ivory';
     const MW = 1600, MH = Math.round(1600 * FH / FW);
     const px = (x, y) => [x / FW * MW, y / FH * MH];            // mat units -> canvas px (from top-left)
+    // neutral grain drawn once, laid over any mat colour
     const grain = document.createElement('canvas'); grain.width = MW; grain.height = MH;
     {
       const g = grain.getContext('2d');
-      g.fillStyle = '#eee6d6'; g.fillRect(0, 0, MW, MH);
-      const img = g.getImageData(0, 0, MW, MH), dd = img.data;
-      for (let i = 0; i < dd.length; i += 4) { const nz = (Math.random() - .5) * 14; dd[i] += nz; dd[i + 1] += nz; dd[i + 2] += nz * .8; }
+      const img = g.createImageData(MW, MH), dd = img.data;
+      for (let i = 0; i < dd.length; i += 4) { const v = 128 + (Math.random() - .5) * 26; dd[i] = dd[i + 1] = dd[i + 2] = v; dd[i + 3] = 255; }
       g.putImageData(img, 0, 0);
-      g.globalAlpha = .06; g.strokeStyle = '#6b5a3e'; g.lineWidth = 1;
+      g.globalAlpha = .18; g.strokeStyle = '#3a3026'; g.lineWidth = 1;
       for (let i = 0; i < 700; i++) {
         const x = Math.random() * MW, y = Math.random() * MH, a = Math.random() * Math.PI, l = 6 + Math.random() * 22;
         g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a) * l * .5 + 3, y + Math.sin(a) * l * .5 - 3, x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
       }
-      g.globalAlpha = 1;
-      const age = g.createRadialGradient(MW / 2, MH / 2, MH * .35, MW / 2, MH / 2, MW * .62);
-      age.addColorStop(0, 'rgba(120,90,40,0)'); age.addColorStop(1, 'rgba(120,90,40,.16)');
-      g.fillStyle = age; g.fillRect(0, 0, MW, MH);
     }
     const [wx, wy] = px(BS, BT), [ww, wh] = px(CW, CH);
     const drawGoldLines = (g, color) => {
@@ -937,22 +943,42 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       });
     };
     const drawMat = (g, gm, d) => {
+      const th = MAT_THEMES[matTheme];
+      const bg = th.auto ? (d.tone || '#1c1916') : th.bg;
+      g.globalCompositeOperation = 'source-over';
+      g.fillStyle = bg; g.fillRect(0, 0, MW, MH);
+      g.globalCompositeOperation = 'overlay'; g.globalAlpha = .55;
       g.drawImage(grain, 0, 0);
+      g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+      const age = g.createRadialGradient(MW / 2, MH / 2, MH * .35, MW / 2, MH / 2, MW * .62);
+      age.addColorStop(0, 'rgba(0,0,0,0)'); age.addColorStop(1, th.age || 'rgba(0,0,0,.3)');
+      g.fillStyle = age; g.fillRect(0, 0, MW, MH);
       gm.fillStyle = '#000'; gm.fillRect(0, 0, MW, MH);
-      drawGoldLines(g, '#a8874c'); drawGoldLines(gm, '#fff');
+      drawGoldLines(g, th.line); drawGoldLines(gm, '#fff');
       const cy = wy + wh + (MH - wy - wh) * .52;
       const title = d.plainTitle.length > 16 ? d.plainTitle.slice(0, 16) + '…' : d.plainTitle;
       g.textBaseline = gm.textBaseline = 'middle';
-      g.fillStyle = '#2a241c'; g.textAlign = 'center';
+      g.fillStyle = th.title; g.textAlign = 'center';
       g.font = '800 46px "Shippori Mincho B1", serif';
       g.fillText(title, MW / 2, cy);
-      [[g, '#9a7a42'], [gm, '#fff']].forEach(([c, col]) => {
+      [[g, th.sub], [gm, '#fff']].forEach(([c, col]) => {
         c.fillStyle = col;
         c.font = '700 28px "Courier Prime", monospace';
         c.textAlign = 'left'; c.fillText(d.no, wx, cy);
         c.font = '600 26px "Cormorant Garamond", serif';
         c.textAlign = 'right'; c.fillText('S T U D I O   A R T S', wx + ww, cy);
       });
+    };
+    // deep tone taken from each key visual (for the "auto" theme)
+    const toneOf = img => {
+      const c = document.createElement('canvas'); c.width = c.height = 16;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0, 16, 16);
+      const dd = g.getImageData(0, 0, 16, 16).data; let r = 0, gg = 0, b = 0;
+      for (let i = 0; i < dd.length; i += 4) { r += dd[i]; gg += dd[i + 1]; b += dd[i + 2]; }
+      const col = new THREE.Color(r / 256 / 255, gg / 256 / 255, b / 256 / 255);
+      const hsl = {}; col.getHSL(hsl);
+      col.setHSL(hsl.h, Math.min(.45, hsl.s * 1.1), .15);
+      return '#' + col.getHexString();
     };
     const loader = new THREE.TextureLoader();
     const cards = data.map((d, i) => {
@@ -970,8 +996,12 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
         uTime: { value: 0 }, uVel: { value: 0 }, uBright: { value: 1 }, uReady: { value: 0 }, uGlow: { value: 0 }, uAng: { value: 0 },
         uRect: { value: new THREE.Vector4(BS / FW, BB / FH, 1 - BS / FW, 1 - BT / FH) },
         uSize: { value: new THREE.Vector2(FW, FH) },
+        uFoil: { value: new THREE.Vector3(.86, .68, .36) }, uBevel: { value: new THREE.Vector3(.98, .96, .91) }, uSheen: { value: 1 },
       };
-      uniforms.uTex.value = loader.load(d.img, t => { t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; uniforms.uReady.value = 1; });
+      uniforms.uTex.value = loader.load(d.img, t => {
+        t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; uniforms.uReady.value = 1;
+        try { d.tone = toneOf(t.image); if (MAT_THEMES[matTheme].auto) window.setMatTheme(matTheme); } catch (e) {}
+      });
       const card = new THREE.Mesh(printGeo, new THREE.ShaderMaterial({ uniforms, vertexShader: vert, fragmentShader: frag }));
       card.userData.i = i;
       pivot.add(card);
@@ -979,7 +1009,21 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       return { card, pivot, uniforms, mctx, gctx, matTex, goldTex, d };
     });
 
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => cards.forEach(c => { drawMat(c.mctx, c.gctx, c.d); c.matTex.needsUpdate = c.goldTex.needsUpdate = true; }));
+    window.setMatTheme = name => {
+      if (!MAT_THEMES[name]) return;
+      matTheme = name;
+      const th = MAT_THEMES[name];
+      cards.forEach(c => {
+        drawMat(c.mctx, c.gctx, c.d);
+        c.matTex.needsUpdate = c.goldTex.needsUpdate = true;
+        c.uniforms.uFoil.value.set(...th.foil);
+        const bv = th.bevel || (() => { const k = new THREE.Color(c.d.tone || '#1c1916'); k.offsetHSL(0, 0, .12); return [k.r, k.g, k.b]; })();
+        c.uniforms.uBevel.value.set(...bv);
+        c.uniforms.uSheen.value = th.sheen;
+      });
+    };
+    window.setMatTheme(window.MAT_THEME || matTheme);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => window.setMatTheme(matTheme));
 
     /* stairs: treads + a pool of light under each one */
     const treadCount = (n - 1) * TREADS + TREADS * 6;
@@ -1048,13 +1092,13 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
       void main(){
         vec3 p = position;
         float g = aGather * uGather;
-        p.x += sin(uTime * .35 + aSeed * 31.) * .08 * (1. - g);
-        p.z += cos(uTime * .29 + aSeed * 17.) * .08 * (1. - g);
+        p.x += sin(uTime * .35 + aSeed * 31.) * .08 * (1. - g * .6);
+        p.z += cos(uTime * .29 + aSeed * 17.) * .08 * (1. - g * .6);
         vec4 mv = modelViewMatrix * vec4(p, 1.);
         float tw = .55 + .45 * sin(uTime * (.8 + aSeed * 1.6) + aSeed * 60.);
-        vA = tw * mix(1., 1.6, g);
+        vA = tw * mix(1., 1.25, g);
         vHot = g;
-        gl_PointSize = aSize * uPx * (1. + g * .6) * (6.5 / -mv.z);
+        gl_PointSize = aSize * uPx * (1. + g * .25) * (6.5 / -mv.z);
         gl_Position = projectionMatrix * mv;
       }`;
     const moteFrag = `
@@ -1206,7 +1250,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
         // motes: drift upward; on hover the first group streams around the print in strands
         [motes, bokeh].forEach(m => { m.uniforms.uTime.value = t; });
         motes.uniforms.uGather.value = dustK;
-        motes.uniforms.uAlpha.value = .9 * (1 - .35 * recK) + .3 * dustK;
+        motes.uniforms.uAlpha.value = .9 * (1 - .35 * recK) + .12 * dustK;
         bokeh.uniforms.uAlpha.value = .06 * (1 - .5 * recK);
         spiral.updateMatrixWorld();
         motes.pts.updateMatrixWorld();
@@ -1216,12 +1260,17 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;op
           if (y > 6) y = -6;
           motes.base[i * 3 + 1] = y;
           if (i < motes.gatherCount && dustK > .005) {
-            const layer = i % 3, sd = motes.seed[i];
-            // evenly spaced around the full outline, all flowing at one speed; layers add depth
-            perim(i / motes.gatherCount + t * .04 + (sd - .5) * .004, v3);
-            const off = .015 + layer * .03 + sd * .015;
-            const a = v3.x / R, rr = R + off;
-            v3.set(Math.sin(a) * rr, v3.y + (sd - .5) * .05, Math.cos(a) * rr);
+            const sd = motes.seed[i], sd2 = (sd * 7.31) % 1, sd3 = (sd * 13.7) % 1;
+            // a loose haze around the outline: spread outward and toward the viewer, each mote wandering on its own
+            perim(i / motes.gatherCount + t * .006, v3);
+            const ox = v3.x / (FW / 2), oy = (v3.y - TY) / (FH / 2);
+            const ol = Math.hypot(ox, oy) || 1;
+            const spread = .03 + Math.pow(sd2, 1.6) * .34;
+            let lx = v3.x + ox / ol * spread + Math.sin(t * .5 + sd * 40.) * .05;
+            let ly = v3.y + oy / ol * spread + Math.cos(t * .43 + sd * 23.) * .05;
+            const lz = -.05 + sd3 * .38 + Math.sin(t * .37 + sd * 11.) * .04;
+            const a = lx / R, rr = R + lz;
+            v3.set(Math.sin(a) * rr, ly, Math.cos(a) * rr);
             cards[focus].pivot.localToWorld(v3);
             motes.pts.worldToLocal(v3);
             const k = dustK * dustK * (3 - 2 * dustK);
