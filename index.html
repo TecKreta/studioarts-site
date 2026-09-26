@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STUDIO ARTS｜スタジオアーツ 公式サイト</title>
+<meta name="description" content="マーダーミステリー制作チーム『STUDIO ARTS』公式サイト。物語を、奪え。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Shippori+Mincho+B1:wght@700;800&family=RocknRoll+One&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   STUDIO ARTS — Official Site
+   ============================================ */
+
+:root {
+  --red: #2D1B3D;
+  --red-dark: #1A0F26;
+  --red-glow: #4A2D66;
+  --black: #0D0B10;
+  --black-soft: #171320;
+  --gray: #2a2540;
+  --off-white: #E5DBC9;
+  --white: #ffffff;
+  --yellow: #C9B037;
+}
+
+/* ============================================
+   THEME OVERRIDES
+   ============================================ */
+body, body * {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+/* 1. Gothic Violet (default :root) — no override needed */
+
+/* 2. Mahoyaku (deep blue × gold) */
+body.theme-mahoyaku {
+  --red: #004986; --red-dark: #003060; --red-glow: #0066b3;
+  --black: #000000; --black-soft: #07161f; --gray: #1a2838;
+  --off-white: #debb54; --yellow: #f5e9b8;
+}
+/* 3. Crimson Noir */
+body.theme-crimson {
+  --red: #e60012; --red-dark: #a80010; --red-glow: #ff1a2e;
+  --black: #0a0a0a; --black-soft: #141414; --gray: #2a2a2a;
+  --off-white: #f2ead3; --yellow: #f5d547;
+}
+/* 4. Emerald Mystery */
+body.theme-emerald {
+  --red: #0B3D2E; --red-dark: #062419; --red-glow: #17664a;
+  --black: #0a0a0a; --black-soft: #101815; --gray: #1c2a23;
+  --off-white: #EFE6D2; --yellow: #D4A84B;
+}
+/* 5. Midnight Noir */
+body.theme-noir {
+  --red: #0F2A4D; --red-dark: #091a31; --red-glow: #1f4577;
+  --black: #0A0A0A; --black-soft: #111827; --gray: #1f2a3d;
+  --off-white: #E8E2D0; --yellow: #C9A86A;
+}
+/* 6. Wafu Mystery */
+body.theme-wafu {
+  --red: #C8102E; --red-dark: #8a0a1e; --red-glow: #e73d58;
+  --black: #1B2631; --black-soft: #111a24; --gray: #2b3a4a;
+  --off-white: #F4EFE0; --yellow: #E8C15F;
+}
+/* 7. Sakura Blood */
+body.theme-sakura {
+  --red: #8B1A3B; --red-dark: #5e112a; --red-glow: #b53659;
+  --black: #1A0E14; --black-soft: #26151c; --gray: #3a2330;
+  --off-white: #F5E6DC; --yellow: #F5C6D0;
+}
+/* 8. Monochrome Assassin (inverted) */
+body.theme-mono {
+  --red: #B91C1C; --red-dark: #7f1313; --red-glow: #e23a3a;
+  --black: #F5F1E8; --black-soft: #ECE4D0; --gray: #bfb6a0;
+  --off-white: #1C1C1C; --yellow: #1C1C1C;
+}
+body.theme-mono { color: #1C1C1C; }
+body.theme-mono .noise { mix-blend-mode: multiply; opacity: 0.04; }
+/* 9. Cyber Neon */
+body.theme-cyber {
+  --red: #FF2E8A; --red-dark: #c21868; --red-glow: #ff5faa;
+  --black: #050A1F; --black-soft: #0b1432; --gray: #1a2548;
+  --off-white: #F4EFE0; --yellow: #00D9E8;
+}
+/* 10. Blood Moon */
+body.theme-bloodmoon {
+  --red: #7A0C2E; --red-dark: #4f061c; --red-glow: #b32048;
+  --black: #0A0505; --black-soft: #16090a; --gray: #2a1418;
+  --off-white: #F5E4D0; --yellow: #E86A1A;
+}
+/* 11. Abyss Teal */
+body.theme-abyss {
+  --red: #0D4F5C; --red-dark: #073840; --red-glow: #1b7889;
+  --black: #040e12; --black-soft: #0a1a1f; --gray: #16303a;
+  --off-white: #E6EEF0; --yellow: #C0C5CE;
+}
+/* 12. Amethyst Veil */
+body.theme-amethyst {
+  --red: #5B3A8A; --red-dark: #3f285f; --red-glow: #7d56b3;
+  --black: #0F0A1A; --black-soft: #1a1230; --gray: #2d2047;
+  --off-white: #F0E6F5; --yellow: #D4C1E8;
+}
+/* 13. Hemoglobin */
+body.theme-hemoglobin {
+  --red: #A0152A; --red-dark: #6e0e1c; --red-glow: #d12e46;
+  --black: #1a0608; --black-soft: #260a0d; --gray: #3a1418;
+  --off-white: #E8EEF4; --yellow: #F5F8FC;
+}
+/* 14. Onyx Gold */
+body.theme-onyx {
+  --red: #1a1a1a; --red-dark: #000000; --red-glow: #333333;
+  --black: #000000; --black-soft: #0c0c0c; --gray: #1f1f1f;
+  --off-white: #F5EBC0; --yellow: #D4AF37;
+}
+/* 15. Iron Rust */
+body.theme-rust {
+  --red: #5C3A2E; --red-dark: #3e2419; --red-glow: #80594a;
+  --black: #1a120d; --black-soft: #261c16; --gray: #3a2b22;
+  --off-white: #EFE0CE; --yellow: #B8763F;
+}
+/* 16. Forest Witch */
+body.theme-forest {
+  --red: #1F3A2E; --red-dark: #10241c; --red-glow: #305c4a;
+  --black: #0a120d; --black-soft: #121d17; --gray: #1d2f24;
+  --off-white: #E8DFCB; --yellow: #D9A96A;
+}
+/* 17. Paper Noir */
+body.theme-paper {
+  --red: #5a4a2d; --red-dark: #3d3020; --red-glow: #86734a;
+  --black: #2B2419; --black-soft: #1f1a11; --gray: #3a3124;
+  --off-white: #F2EBD5; --yellow: #D8B35A;
+}
+/* 18. Neon Tokyo */
+body.theme-tokyo {
+  --red: #2B0B4F; --red-dark: #1a0732; --red-glow: #4d1a87;
+  --black: #08031a; --black-soft: #120728; --gray: #241141;
+  --off-white: #F0E6FF; --yellow: #FF4FA8;
+}
+/* 19. Ice Lapis */
+body.theme-lapis {
+  --red: #0A1F3D; --red-dark: #051127; --red-glow: #1a3c70;
+  --black: #020814; --black-soft: #071224; --gray: #132439;
+  --off-white: #E4F1F6; --yellow: #7FC7D9;
+}
+/* 20. Midnight Chrome */
+body.theme-chrome {
+  --red: #1a1d26; --red-dark: #0f1219; --red-glow: #2e3345;
+  --black: #0A0A0F; --black-soft: #12141c; --gray: #20242f;
+  --off-white: #E8ECF2; --yellow: #C5CDD9;
+}
+/* 21. Carbon Steel */
+body.theme-carbon {
+  --red: #1E2126; --red-dark: #14161a; --red-glow: #323842;
+  --black: #08090c; --black-soft: #13151a; --gray: #252931;
+  --off-white: #E1EBF2; --yellow: #6BB8D6;
+}
+/* 22. Slate Minimal */
+body.theme-slate {
+  --red: #2B2F35; --red-dark: #1c2026; --red-glow: #444a54;
+  --black: #0d0f12; --black-soft: #171a1f; --gray: #2a2e35;
+  --off-white: #EFE9DE; --yellow: #B8936A;
+}
+/* 23. Arctic Sapphire */
+body.theme-arctic {
+  --red: #0C1B2E; --red-dark: #061122; --red-glow: #1e3656;
+  --black: #020611; --black-soft: #0a111f; --gray: #14243c;
+  --off-white: #EAF2FB; --yellow: #4A90C0;
+}
+/* 24. Platinum Obsidian */
+body.theme-platinum {
+  --red: #0E0E10; --red-dark: #050506; --red-glow: #1f1f22;
+  --black: #050505; --black-soft: #0c0c0c; --gray: #1a1a1c;
+  --off-white: #F1F3F6; --yellow: #BEC2C9;
+}
+
+/* ============================================
+   THEME PANEL
+   ============================================ */
+.nav-logo { cursor: pointer; user-select: none; }
+.nav-logo::after {
+  content: "◉ THEMES";
+  display: block;
+  font-family: var(--font-en);
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  color: var(--red);
+  opacity: 0.6;
+  margin-top: 2px;
+  transition: opacity 0.3s;
+}
+.nav-logo:hover::after { opacity: 1; }
+
+.theme-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.theme-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.theme-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  z-index: 1001;
+  width: min(920px, 92vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--black);
+  border: 2px solid var(--red);
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+  padding: 40px 40px 32px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  clip-path: polygon(2% 0, 100% 0, 98% 100%, 0 100%);
+}
+.theme-backdrop.open + .theme-panel,
+.theme-panel.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.theme-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--red);
+}
+.theme-panel-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: 0.15em;
+  color: var(--off-white);
+}
+.theme-panel-title span { color: var(--red); }
+.theme-panel-close {
+  background: transparent;
+  border: 1px solid var(--off-white);
+  color: var(--off-white);
+  width: 36px; height: 36px;
+  font-size: 18px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  transition: background 0.2s, color 0.2s;
+}
+.theme-panel-close:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--off-white);
+}
+
+.theme-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.theme-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.theme-group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(201, 176, 55, 0.25);
+}
+.theme-group-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+.theme-group-title {
+  font-family: var(--font-en);
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  color: var(--yellow);
+  font-weight: 700;
+}
+.theme-group-sub {
+  font-family: var(--font-gothic);
+  font-size: 11px;
+  color: rgba(229,219,201,0.5);
+  margin-left: auto;
+}
+.theme-group-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.theme-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: var(--black-soft);
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--off-white);
+  text-align: left;
+  transition: border-color 0.2s, transform 0.2s;
+  position: relative;
+}
+.theme-card:hover {
+  border-color: var(--red);
+  transform: translateY(-3px);
+}
+.theme-card.active {
+  border-color: var(--yellow);
+  box-shadow: 0 0 18px rgba(255,255,255,0.15);
+}
+.theme-card.active::before {
+  content: "✓";
+  position: absolute;
+  top: 6px; right: 10px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--yellow);
+}
+
+.theme-card-swatches {
+  display: flex;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.theme-card-swatches span { flex: 1; }
+
+.theme-card-name {
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--off-white);
+  letter-spacing: 0.05em;
+}
+.theme-card-desc {
+  font-family: var(--font-gothic);
+  font-size: 11px;
+  color: #aaa;
+  letter-spacing: 0.05em;
+}
+
+.theme-toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  z-index: 1100;
+  padding: 12px 24px;
+  background: var(--red);
+  color: var(--off-white);
+  font-family: var(--font-en);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  clip-path: polygon(4% 0, 100% 0, 96% 100%, 0 100%);
+}
+.theme-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+
+  --font-jp: "Shippori Mincho B1", "Zen Kaku Gothic New", serif;
+  --font-gothic: "Zen Kaku Gothic New", sans-serif;
+  --font-en: "Oswald", sans-serif;
+  --font-display: "Bebas Neue", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--off-white);
+  font-family: var(--font-jp);
+  overflow-x: hidden;
+  line-height: 1.6;
+  font-feature-settings: "palt";
+}
+
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+
+/* ============================================
+   NOISE OVERLAY
+   ============================================ */
+.noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+/* ============================================
+   NAV
+   ============================================ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid var(--red);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Image logo — invert black→white + screen to drop white bg */
+.logo-img {
+  height: 72px;
+  width: auto;
+  display: block;
+  filter: invert(1);
+  mix-blend-mode: screen;
+  transition: filter 0.3s, transform 0.3s;
+}
+.nav-logo:hover .logo-img {
+  filter: invert(1) drop-shadow(0 0 6px rgba(201,176,55,0.7));
+  transform: scale(1.03);
+}
+.footer-logo .logo-img { height: 110px; }
+.loader-logo-img {
+  height: clamp(120px, 20vw, 240px);
+  width: auto;
+  display: block;
+  mix-blend-mode: screen;
+  filter: invert(1) drop-shadow(6px 6px 0 rgba(45,27,61,0.6));
+}
+@media (max-width: 768px) {
+  .logo-img { height: 54px; }
+  .footer-logo .logo-img { height: 80px; }
+}
+
+/* Legacy text logo — kept hidden (can be restored if needed) */
+.logo-mark, .logo-sub { display: none; }
+
+.nav-list {
+  display: flex;
+  gap: 28px;
+}
+
+.nav-list a {
+  position: relative;
+  font-family: var(--font-en);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 8px 4px;
+  transition: color 0.2s;
+}
+.nav-list a::before {
+  content: attr(data-num);
+  display: block;
+  font-size: 9px;
+  color: var(--red);
+  letter-spacing: 0.1em;
+}
+.nav-list a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0;
+  height: 2px;
+  background: var(--red);
+  transition: width 0.3s;
+}
+.nav-list a:hover::after { width: 100%; }
+
+.nav-cta {
+  font-family: var(--font-en);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 10px 18px;
+  background: var(--red);
+  color: var(--off-white);
+  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+  transition: transform 0.2s;
+}
+.nav-cta:hover { transform: translateX(4px); }
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 60px 80px;
+  overflow: hidden;
+  background: var(--black);
+}
+
+.hero-bg-shapes { position: absolute; inset: 0; z-index: 0; }
+
+.shape {
+  position: absolute;
+  background: var(--red);
+}
+.shape-1 {
+  top: -10%; right: -5%;
+  width: 60%; height: 120%;
+  clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+  opacity: 0.95;
+}
+.shape-2 {
+  top: 10%; right: 15%;
+  width: 40%; height: 90%;
+  background: var(--black-soft);
+  clip-path: polygon(20% 0, 100% 0, 85% 100%, 0% 100%);
+}
+.shape-3 {
+  bottom: -5%; left: -2%;
+  width: 35%; height: 50%;
+  background: var(--off-white);
+  clip-path: polygon(0 20%, 100% 0, 90% 100%, 0% 100%);
+  opacity: 0.08;
+}
+
+.halftone {
+  position: absolute;
+  background-image: radial-gradient(circle, var(--black) 1.5px, transparent 2px);
+  background-size: 10px 10px;
+  opacity: 0.4;
+}
+.halftone-1 {
+  top: 15%; right: 5%;
+  width: 300px; height: 300px;
+  mask-image: radial-gradient(circle, black 40%, transparent 70%);
+}
+.halftone-2 {
+  bottom: 10%; left: 40%;
+  width: 400px; height: 200px;
+  background-image: radial-gradient(circle, var(--red) 1.5px, transparent 2px);
+  mask-image: radial-gradient(ellipse, black 40%, transparent 70%);
+  opacity: 0.6;
+}
+
+.hero-stripe {
+  position: absolute;
+  top: 78px;
+  left: -5%;
+  width: 110%;
+  background: var(--yellow);
+  color: var(--black);
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.15em;
+  padding: 8px 0;
+  transform: rotate(-2deg);
+  overflow: hidden;
+  border-top: 2px solid var(--black);
+  border-bottom: 2px solid var(--black);
+  z-index: 2;
+}
+.hero-stripe-track {
+  display: inline-flex;
+  gap: 30px;
+  white-space: nowrap;
+  padding-left: 30px;
+  animation: marquee 18s linear infinite;
+  will-change: transform;
+}
+.hero-stripe-track span { flex-shrink: 0; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 3;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+}
+
+.hero-badge {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--off-white);
+  color: var(--black);
+  padding: 8px 16px;
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  transform: rotate(-3deg);
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+}
+.badge-no strong { color: var(--red); font-size: 16px; }
+
+.hero-title {
+  grid-column: 1;
+  font-family: var(--font-jp);
+  font-weight: 800;
+  line-height: 0.9;
+  color: var(--off-white);
+}
+.title-line {
+  display: block;
+  font-size: clamp(60px, 11vw, 180px);
+  letter-spacing: -0.02em;
+  text-shadow:
+    6px 6px 0 var(--red),
+    12px 12px 0 var(--black);
+  -webkit-text-stroke: 1px var(--off-white);
+}
+.line-1 { transform: skew(-4deg, 0); }
+.line-2 {
+  margin-left: 80px;
+  color: var(--red);
+  text-shadow:
+    6px 6px 0 var(--off-white),
+    12px 12px 0 var(--black);
+  -webkit-text-stroke: 1px var(--red);
+}
+.line-2 em {
+  color: var(--off-white);
+  font-style: normal;
+  -webkit-text-stroke: 1px var(--off-white);
+}
+.title-en {
+  display: block;
+  margin-top: 20px;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.5vw, 38px);
+  letter-spacing: 0.15em;
+  color: var(--off-white);
+  opacity: 0.9;
+  transform: skew(-6deg);
+}
+
+.page-hero {
+  position: relative;
+  min-height: 78vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 140px 60px 80px;
+  overflow: hidden;
+  background: var(--black);
+}
+
+.page-hero-inner {
+  position: relative;
+  z-index: 3;
+  width: min(1320px, 100%);
+  margin: 0 auto;
+}
+
+.page-hero-copy {
+  max-width: 860px;
+}
+
+.page-kicker {
+  margin-bottom: 20px;
+  font-family: var(--font-en);
+  font-size: 14px;
+  letter-spacing: 0.3em;
+  color: var(--yellow);
+}
+
+.page-title {
+  font-family: var(--font-jp);
+  font-weight: 800;
+  line-height: 0.92;
+}
+
+.page-lead {
+  margin-top: 28px;
+  max-width: 640px;
+  font-size: 18px;
+  line-height: 2;
+  color: rgba(229, 219, 201, 0.92);
+}
+
+.hero-lead {
+  grid-column: 2;
+  font-size: 15px;
+  line-height: 2;
+  text-align: right;
+  background: var(--off-white);
+  color: var(--black);
+  padding: 20px 24px;
+  clip-path: polygon(0 0, 100% 0, 100% 88%, 92% 100%, 0 100%);
+  max-width: 340px;
+  transform: rotate(1deg);
+  align-self: center;
+}
+.hero-lead strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--red);
+  letter-spacing: 0.08em;
+}
+
+.hero-cta {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 28px;
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary {
+  background: var(--red);
+  color: var(--off-white);
+}
+.btn-primary:hover {
+  transform: translate(3px, -3px);
+  box-shadow: -4px 4px 0 var(--off-white);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--off-white);
+  outline: 2px solid var(--off-white);
+  outline-offset: -2px;
+}
+.btn-ghost:hover {
+  background: var(--off-white);
+  color: var(--black);
+  transform: translate(3px, -3px);
+}
+.btn-large { padding: 20px 36px; font-size: 16px; }
+.btn-arrow { font-size: 10px; }
+
+.hero-meta {
+  position: absolute;
+  bottom: 60px;
+  right: 60px;
+  display: flex;
+  gap: 32px;
+  z-index: 4;
+}
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--black);
+  border: 2px solid var(--off-white);
+  transform: rotate(-2deg);
+}
+.meta-item:nth-child(2) { transform: rotate(1deg); }
+.meta-item:nth-child(3) { transform: rotate(-1deg); }
+.meta-num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--red);
+  line-height: 1;
+}
+.meta-label {
+  font-family: var(--font-en);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--off-white);
+  margin-top: 2px;
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 30px;
+  left: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-en);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--off-white);
+  z-index: 4;
+}
+.scroll-line {
+  width: 80px;
+  height: 1px;
+  background: var(--off-white);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-line::after {
+  content: "";
+  position: absolute;
+  left: -30%;
+  width: 30%;
+  height: 100%;
+  background: var(--red);
+  animation: scroll-dash 2s linear infinite;
+}
+@keyframes scroll-dash {
+  to { left: 100%; }
+}
+
+/* ============================================
+   SECTION (shared)
+   ============================================ */
+.section {
+  position: relative;
+  padding: 120px 60px;
+  overflow: hidden;
+}
+
+.section-head {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 80px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-no {
+  font-family: var(--font-display);
+  font-size: 60px;
+  color: var(--red);
+  line-height: 1;
+  transform: skew(-6deg);
+}
+
+.section-title {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  padding: 14px 24px;
+  background: var(--off-white);
+  color: var(--black);
+  clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
+}
+.section-title .jp {
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: 0.05em;
+}
+.section-title .en {
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.25em;
+  color: var(--red);
+}
+
+/* ============================================
+   ABOUT
+   ============================================ */
+.about {
+  background: var(--black);
+}
+.about::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(230,0,18,0.08) 1px, transparent 2px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+.about-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.about-text { font-size: 16px; line-height: 2; }
+.about-lead {
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 1.5;
+  color: var(--off-white);
+  margin-bottom: 30px;
+}
+.about-lead strong {
+  color: var(--red);
+  font-size: 40px;
+  letter-spacing: 0.05em;
+}
+.about-text p { margin-bottom: 20px; }
+
+.about-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pillar-card {
+  position: relative;
+  padding: 28px 28px 28px 80px;
+  background: var(--black-soft);
+  border-left: 4px solid var(--red);
+  clip-path: polygon(0 0, 100% 0, 98% 100%, 0 100%);
+  transition: transform 0.3s;
+}
+.pillar-card:hover {
+  transform: translateX(6px);
+}
+.pillar-card:nth-child(2) { transform: translateX(20px); }
+.pillar-card:nth-child(3) { transform: translateX(40px); }
+.pillar-card:nth-child(2):hover { transform: translateX(26px); }
+.pillar-card:nth-child(3):hover { transform: translateX(46px); }
+
+.pillar-no {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: 44px;
+  color: var(--red);
+  line-height: 1;
+}
+.pillar-card h3 {
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--off-white);
+  margin-bottom: 8px;
+}
+.pillar-card p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #c8c2b0;
+}
+
+/* ============================================
+   WORKS
+   ============================================ */
+.works {
+  background: var(--off-white);
+  color: var(--black);
+}
+.works::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 40px;
+  background: var(--red);
+  clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%);
+}
+.works::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40px;
+  background: var(--black);
+  clip-path: polygon(0 60%, 100% 0, 100% 100%, 0 100%);
+}
+
+.works .section-title {
+  background: var(--black);
+  color: var(--off-white);
+}
+.works .section-title .en { color: var(--red); }
+
+.works-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.work-card {
+  position: relative;
+  background: var(--white);
+  border: 3px solid var(--black);
+  transform: rotate(var(--rot, 0deg));
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 8px 8px 0 var(--black);
+  overflow: hidden;
+}
+.work-card:hover {
+  transform: rotate(0) translate(-4px, -4px);
+  box-shadow: 14px 14px 0 var(--red);
+}
+
+.work-img {
+  aspect-ratio: 16/9;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-bottom: 3px solid var(--black);
+}
+.work-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.5));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.work-card:hover .work-img::after { opacity: 1; }
+
+.work-img-placeholder {
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.placeholder-text {
+  font-family: var(--font-display);
+  font-size: 40px;
+  color: var(--red);
+  text-align: center;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  transform: skew(-6deg);
+}
+
+.work-info {
+  padding: 20px 22px 24px;
+  position: relative;
+}
+.work-no {
+  position: absolute;
+  top: -18px;
+  right: 16px;
+  background: var(--red);
+  color: var(--off-white);
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  padding: 4px 12px;
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+}
+.work-info h3 {
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--black);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.work-info h3 .sub { font-size: 14px; display: block; color: var(--red); font-weight: 700; }
+
+.work-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.work-tags span {
+  font-family: var(--font-gothic);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: var(--black);
+  color: var(--off-white);
+  letter-spacing: 0.05em;
+}
+
+.work-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.work-meta {
+  font-family: var(--font-en);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--red);
+  font-weight: 700;
+  border-top: 1px dashed var(--black);
+  padding-top: 10px;
+}
+
+.works-more {
+  text-align: center;
+  margin-top: 60px;
+  font-family: var(--font-en);
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  color: var(--black);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.works-more strong { color: var(--red); font-size: 18px; }
+
+/* ============================================
+   MEMBERS PAGE
+   ============================================ */
+.members-page .page-hero::after {
+  content: "";
+  position: absolute;
+  right: 5%;
+  bottom: 12%;
+  width: 340px;
+  height: 340px;
+  border: 2px solid rgba(201, 176, 55, 0.4);
+  transform: rotate(12deg);
+  clip-path: polygon(20% 0, 100% 0, 80% 100%, 0 100%);
+  opacity: 0.4;
+}
+
+.members-section {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(45, 27, 61, 0.18) 0%, transparent 38%),
+    var(--black-soft);
+}
+
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.member-card {
+  position: relative;
+  min-height: 250px;
+  padding: 34px 30px 28px;
+  background:
+    linear-gradient(160deg, rgba(229, 219, 201, 0.08), transparent 55%),
+    linear-gradient(145deg, var(--black-soft), rgba(23, 19, 32, 0.92));
+  border: 2px solid rgba(201, 176, 55, 0.18);
+  clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
+  box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.member-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0%, transparent 44%, rgba(201, 176, 55, 0.1) 45%, transparent 48%);
+  pointer-events: none;
+}
+
+.member-card::after {
+  content: "";
+  position: absolute;
+  right: -30px;
+  bottom: -36px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(45, 27, 61, 0.9) 0%, rgba(45, 27, 61, 0) 70%);
+  pointer-events: none;
+}
+
+.member-no { display: none; }
+.member-no--keep-unused {
+  display: inline-block;
+  margin-bottom: 18px;
+  font-family: var(--font-display);
+  font-size: 58px;
+  line-height: 1;
+  color: rgba(201, 176, 55, 0.36);
+}
+
+.member-card h3 {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 14px;
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.1;
+  color: var(--off-white);
+}
+
+.member-card p {
+  position: relative;
+  z-index: 1;
+  max-width: 28ch;
+  font-size: 16px;
+  line-height: 2;
+  color: rgba(229, 219, 201, 0.88);
+}
+
+.members-note {
+  background: linear-gradient(180deg, var(--black-soft) 0%, var(--black) 100%);
+}
+
+.members-note-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 32px;
+  border: 2px solid rgba(201, 176, 55, 0.24);
+  background: rgba(23, 19, 32, 0.9);
+  clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%);
+}
+
+.members-note-panel p {
+  max-width: 720px;
+  font-size: 17px;
+  line-height: 2;
+}
+
+/* ============================================
+   NEWS
+   ============================================ */
+.news { background: var(--black); }
+
+.news-list {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.news-item {
+  display: grid;
+  grid-template-columns: 110px 140px 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 20px 24px;
+  background: var(--black-soft);
+  border-left: 4px solid var(--red);
+  transition: transform 0.2s, background 0.2s;
+}
+.news-item:hover {
+  transform: translateX(6px);
+  background: #1e1e1e;
+}
+.news-date {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--red);
+  letter-spacing: 0.05em;
+}
+.news-cat {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  background: var(--off-white);
+  color: var(--black);
+  padding: 5px 10px;
+  text-align: center;
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+}
+.news-title {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--off-white);
+}
+
+/* ============================================
+   CONTACT
+   ============================================ */
+.contact {
+  background: var(--red);
+  color: var(--off-white);
+  position: relative;
+}
+.contact::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.12) 1.5px, transparent 2px);
+  background-size: 14px 14px;
+  pointer-events: none;
+}
+.contact .section-title {
+  background: var(--black);
+  color: var(--off-white);
+}
+.contact .section-title .en { color: var(--red); }
+.contact .section-no { color: var(--black); }
+
+.contact-grid {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 60px;
+}
+
+.contact-info h3 {
+  font-family: var(--font-display);
+  font-size: 56px;
+  letter-spacing: 0.05em;
+  margin-bottom: 20px;
+  line-height: 1;
+  -webkit-text-stroke: 1px var(--off-white);
+  color: transparent;
+  text-shadow: 4px 4px 0 var(--black);
+}
+.contact-info p {
+  font-size: 15px;
+  line-height: 1.9;
+  margin-bottom: 30px;
+}
+
+
+/* ============================================
+   SNS
+   ============================================ */
+.sns { background: var(--black); }
+
+.sns-grid {
+  max-width: 1200px;
+  margin: 0 auto 60px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.sns-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 28px;
+  background: var(--black-soft);
+  border: 2px solid var(--off-white);
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
+  clip-path: polygon(4% 0, 100% 0, 96% 100%, 0 100%);
+}
+.sns-card:hover {
+  background: var(--red);
+  border-color: var(--red);
+  transform: translate(4px, -4px);
+}
+.sns-icon {
+  font-family: var(--font-display);
+  font-size: 40px;
+  color: var(--red);
+  line-height: 1;
+  grid-row: span 2;
+  transition: color 0.2s;
+}
+.sns-card:hover .sns-icon { color: var(--off-white); }
+.sns-name {
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  grid-column: 2;
+  grid-row: 1;
+}
+.sns-handle {
+  font-size: 12px;
+  color: #aaa;
+  grid-column: 2;
+  grid-row: 2;
+  transition: color 0.2s;
+}
+.sns-card:hover .sns-handle { color: var(--off-white); }
+.sns-arrow {
+  grid-row: span 2;
+  grid-column: 3;
+  font-size: 20px;
+  color: var(--red);
+  transition: color 0.2s;
+}
+.sns-card:hover .sns-arrow { color: var(--off-white); }
+
+.sns-timeline {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px;
+  background: var(--black-soft);
+  border: 2px solid var(--red);
+}
+.timeline-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--red);
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--red);
+  padding-bottom: 8px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  position: relative;
+  padding: 80px 60px 40px;
+  background: var(--red);
+  color: var(--off-white);
+  overflow: hidden;
+}
+.footer-bg-shape {
+  position: absolute;
+  top: -80px;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: var(--black);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 30%);
+}
+.footer::before {
+  content: "STUDIO ARTS";
+  position: absolute;
+  bottom: -60px;
+  left: -20px;
+  font-family: var(--font-display);
+  font-size: 280px;
+  letter-spacing: -0.02em;
+  color: rgba(0,0,0,0.15);
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.footer-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+.footer-logo .logo-mark {
+  color: var(--off-white);
+  font-size: 48px;
+  text-shadow: 3px 3px 0 var(--black);
+}
+.footer-logo .logo-mark em { color: var(--black); }
+.footer-logo .logo-sub { color: var(--off-white); font-size: 14px; }
+
+.footer-tagline {
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: 22px;
+}
+.footer-copy {
+  font-family: var(--font-en);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  opacity: 0.85;
+  margin-top: 20px;
+}
+
+/* ============================================
+   REVEAL ANIMATION
+   ============================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px) rotate(var(--rot, 0deg));
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0) rotate(var(--rot, 0deg));
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 980px) {
+  .nav { padding: 14px 20px; }
+  .nav-list { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .page-hero { min-height: auto; padding: 130px 24px 64px; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-lead { grid-column: 1; max-width: 100%; text-align: left; }
+  .line-2 { margin-left: 20px; }
+  .page-lead { font-size: 16px; }
+  .hero-meta { position: static; margin-top: 30px; }
+  .section { padding: 80px 24px; }
+  .section-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .section-no { font-size: 40px; }
+  .section-title .jp { font-size: 22px; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .pillar-card { transform: none !important; }
+  .works-grid { grid-template-columns: 1fr; }
+  .work-card { transform: none; }
+  .members-grid { grid-template-columns: 1fr; }
+  .members-note-panel { flex-direction: column; align-items: flex-start; }
+  .news-item { grid-template-columns: 1fr; gap: 8px; }
+  .contact-grid { gap: 40px; }
+  .sns-grid { grid-template-columns: 1fr; }
+  .contact-info h3 { font-size: 40px; }
+  .footer::before { font-size: 120px; bottom: -30px; }
+}
+
+@media (max-width: 640px) {
+  .page-kicker { font-size: 11px; }
+  .member-card {
+    min-height: auto;
+    padding: 28px 22px 24px;
+  }
+  .member-no { display: none; }
+.member-no--keep-unused { font-size: 48px; }
+}
+
+/* ============================================
+   LOADING SPLASH
+   ============================================ */
+.loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--black);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  animation: loaderOut 0.9s 1.6s cubic-bezier(0.77, 0, 0.18, 1) forwards;
+}
+.loader.done { pointer-events: none; }
+@keyframes loaderOut {
+  0%   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
+}
+.loader-stripe {
+  position: absolute; left: -10%; width: 140%;
+  padding: 12px 0;
+  background: var(--yellow);
+  color: var(--black);
+  font-family: var(--font-en);
+  font-weight: 700; letter-spacing: 0.2em;
+  font-size: 14px;
+  display: flex; gap: 28px; white-space: nowrap;
+  box-shadow: 0 8px 0 rgba(0,0,0,0.4);
+}
+.loader-stripe span { display: inline-block; }
+.loader-stripe-1 { top: 22%; animation: loaderStripe 14s linear infinite; }
+.loader-stripe-2 { bottom: 22%; background: var(--off-white); animation: loaderStripe2 18s linear infinite; }
+@keyframes loaderStripe {
+  0%   { transform: rotate(-4deg) translateX(0); }
+  100% { transform: rotate(-4deg) translateX(-30%); }
+}
+@keyframes loaderStripe2 {
+  0%   { transform: rotate(3deg) translateX(-30%); }
+  100% { transform: rotate(3deg) translateX(0); }
+}
+.loader-center {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 22px;
+  animation: loaderPop 0.6s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+}
+@keyframes loaderPop {
+  0%   { transform: scale(0.6) rotate(-6deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+.loader-logo {
+  font-family: var(--font-display);
+  font-size: clamp(80px, 14vw, 180px);
+  line-height: 1;
+  color: var(--off-white);
+  display: flex; align-items: center;
+  text-shadow: 6px 6px 0 var(--red), 12px 12px 0 rgba(0,0,0,0.6);
+}
+.loader-logo em {
+  color: var(--yellow); font-style: normal;
+  margin: 0 -0.1em; transform: skewX(-18deg);
+  display: inline-block;
+}
+.loader-bar {
+  width: min(320px, 60vw); height: 6px;
+  background: rgba(255,255,255,0.12);
+  overflow: hidden;
+}
+.loader-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--red), var(--yellow));
+  animation: loaderBar 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes loaderBar {
+  0%   { width: 0%; }
+  100% { width: 100%; }
+}
+.loader-txt {
+  font-family: var(--font-en);
+  letter-spacing: 0.3em; font-size: 12px;
+  color: rgba(229, 219, 201, 0.7);
+}
+.loader-dots::after {
+  content: ""; display: inline-block;
+  width: 2ch; text-align: left;
+  animation: loaderDots 1s steps(4) infinite;
+}
+@keyframes loaderDots {
+  0%, 100% { content: ""; }
+  25%      { content: "."; }
+  50%      { content: ".."; }
+  75%      { content: "..."; }
+}
+.loader-wipe {
+  position: absolute; inset: 0;
+  background: var(--red);
+  transform: translateX(-105%) skewX(-14deg);
+  animation: loaderWipe 0.7s 1.5s cubic-bezier(0.77, 0, 0.18, 1) forwards;
+}
+@keyframes loaderWipe {
+  0%   { transform: translateX(-105%) skewX(-14deg); }
+  50%  { transform: translateX(0) skewX(-14deg); }
+  100% { transform: translateX(110%) skewX(-14deg); }
+}
+
+/* SCROLL PROGRESS */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 8px; z-index: 9998;
+  background: rgba(13, 11, 16, 0.5);
+  border-bottom: 1px solid rgba(201, 176, 55, 0.15);
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+}
+.scroll-progress::after {
+  content: "";
+  display: block; height: 100%;
+  width: var(--sp, 0%);
+  background: linear-gradient(90deg, var(--yellow) 0%, #f0c040 40%, var(--red) 100%);
+  box-shadow:
+    0 0 14px rgba(201, 176, 55, 0.9),
+    0 0 24px rgba(201, 176, 55, 0.5),
+    0 2px 6px rgba(74, 45, 102, 0.6);
+  transition: width 0.1s linear;
+}
+.scroll-progress::before {
+  content: "";
+  position: absolute;
+  top: 0; left: var(--sp, 0%);
+  width: 12px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+  transform: translateX(-6px);
+  filter: blur(1px);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Hero title entrance */
+.hero .title-line {
+  opacity: 0;
+  animation: heroLineIn 0.9s cubic-bezier(0.2, 0.9, 0.2, 1) 2.0s forwards;
+}
+.hero .title-line.line-2 {
+  animation-name: heroLineInRight;
+  animation-delay: 2.25s;
+}
+.hero .title-line.line-3 { animation-delay: 2.5s; }
+@keyframes heroLineIn {
+  0%   { opacity: 0; transform: translateX(-60px) skewX(-8deg); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: translateX(0) skewX(0); }
+}
+@keyframes heroLineInRight {
+  0%   { opacity: 0; transform: translateX(60px) skewX(-8deg); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: translateX(0) skewX(0); }
+}
+.hero .hero-kicker,
+.hero .hero-lead,
+.hero .hero-actions,
+.hero .hero-badge {
+  opacity: 0;
+  animation: heroFadeUp 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+}
+.hero .hero-kicker { animation-delay: 1.9s; }
+.hero .hero-badge  { animation-delay: 2.1s; }
+.hero .hero-lead   { animation-delay: 2.7s; }
+.hero .hero-actions{ animation-delay: 2.9s; }
+@keyframes heroFadeUp {
+  0%   { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Section head — B(3-line sweep) + E(glitch flicker) */
+.section-head { position: relative; }
+/* 3 lines — injected via JS. mix-blend-mode: difference keeps contrast on any bg */
+.sh-line {
+  position: absolute;
+  left: -10%;
+  width: 120%; height: 2px;
+  background: #f0d060;
+  opacity: 0;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform, opacity;
+}
+.sh-line-1 { top: 28%; }
+.sh-line-2 { top: 50%; height: 2.5px; }
+.sh-line-3 { top: 72%; }
+.section-head.reveal.visible .sh-line-1 {
+  animation: shLine1 0.7s 0s cubic-bezier(0.77,0,0.18,1) forwards;
+}
+.section-head.reveal.visible .sh-line-2 {
+  animation: shLine2 0.75s 0.1s cubic-bezier(0.77,0,0.18,1) forwards;
+}
+.section-head.reveal.visible .sh-line-3 {
+  animation: shLine3 0.7s 0.22s cubic-bezier(0.77,0,0.18,1) forwards;
+}
+@keyframes shLine1 {
+  0%   { opacity: 0; transform: rotate(-10deg) translateX(-120%); }
+  25%  { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(-10deg) translateX(120%); }
+}
+@keyframes shLine2 {
+  0%   { opacity: 0; transform: rotate(-4deg) translateX(-120%); }
+  25%  { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(-4deg) translateX(120%); }
+}
+@keyframes shLine3 {
+  0%   { opacity: 0; transform: rotate(-13deg) translateX(130%); }
+  25%  { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(-13deg) translateX(-130%); }
+}
+/* Residual stub after sweep */
+.section-head.reveal::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: -40px;
+  width: 36px; height: 2px;
+  background: #f0d060;
+  mix-blend-mode: difference;
+  opacity: 0;
+  transform: rotate(-4deg);
+  pointer-events: none;
+  z-index: 1;
+}
+.section-head.reveal.visible::after {
+  animation: headLineRest 0.4s 0.95s forwards;
+}
+@keyframes headLineRest {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+/* Glitch flicker on title (E) — triggers after sweep */
+.section-head.reveal .section-no,
+.section-head.reveal .section-title .jp,
+.section-head.reveal .section-title .en {
+  opacity: 0;
+}
+.section-head.reveal.visible .section-no {
+  animation: headFadeSmall 0.4s 0.8s forwards;
+}
+.section-head.reveal.visible .section-title .jp {
+  animation: headGlitch 0.7s 0.9s steps(10, end) forwards;
+}
+.section-head.reveal.visible .section-title .en {
+  animation: headGlitch 0.7s 1.05s steps(10, end) forwards;
+}
+@keyframes headFadeSmall {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes headGlitch {
+  0%   { opacity: 0; transform: translate(0,0); filter: none; }
+  10%  { opacity: 1; transform: translate(-5px, 2px); filter: drop-shadow(3px 0 0 #ff2d4d) drop-shadow(-3px 0 0 #2de0ff); }
+  20%  { opacity: 0.2; transform: translate(4px, -2px); filter: none; }
+  30%  { opacity: 1; transform: translate(-3px, 1px); filter: drop-shadow(2px 0 0 var(--red-glow)) drop-shadow(-2px 0 0 var(--yellow)); }
+  45%  { opacity: 0.4; transform: translate(2px, 0); filter: none; }
+  60%  { opacity: 1; transform: translate(-1px, 0); filter: drop-shadow(1px 0 0 var(--yellow)); }
+  80%  { opacity: 1; transform: translate(0.5px, 0); filter: none; }
+  100% { opacity: 1; transform: translate(0,0); filter: none; }
+}
+
+/* Work card hover */
+.work-card { transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 0.35s; }
+.work-card:hover {
+  transform: translateY(-6px) rotate(-1.2deg) scale(1.02);
+  box-shadow: -6px 6px 0 var(--red), 6px 10px 0 var(--yellow), 0 20px 40px rgba(0,0,0,0.5);
+}
+.work-card:hover .work-img img { transform: scale(1.08) rotate(-0.8deg); filter: saturate(1.15) contrast(1.05); }
+.work-img img { transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.2, 1), filter 0.5s; }
+
+/* Member card hover — keep base card visible; flyer overlay sits on top */
+.member-card {
+  transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.2, 1),
+              box-shadow 0.4s,
+              clip-path 0.35s;
+}
+.member-card:hover {
+  transform: translateY(-4px) rotate(var(--rot, 0)) scale(1.015);
+  box-shadow: 12px 12px 0 rgba(0,0,0,0.35);
+  overflow: visible;
+  clip-path: none;
+  z-index: 10;
+}
+
+/* ===== Member hover flyer — Slap-on sticker with lagging shadow cards ===== */
+.member-reveal{
+  position:absolute;
+  inset:-12px;
+  z-index:8;pointer-events:none;
+  opacity:0;
+  transform:translate(0,0) rotate(0deg) scale(.72);
+  transform-origin:50% 50%;
+  overflow:hidden;
+  background:linear-gradient(135deg, var(--black) 0%, var(--black-soft) 100%);
+  border:3px solid var(--black);
+  /* Baseline: shadows stacked directly behind (no offset = invisible) */
+  box-shadow:
+    0 0 0 var(--red),
+    0 0 0 var(--black-soft),
+    0 0 0 rgba(0,0,0,0);
+  transition:
+    opacity .3s ease,
+    transform .5s cubic-bezier(.3,1.45,.5,1),
+    box-shadow .55s cubic-bezier(.3,1.35,.4,1) .18s;
+}
+/* Per-card tilt variation (alternating mirror), shadows slide out of position after flyer lands */
+.member-card:nth-child(odd):hover .member-reveal{
+  opacity:1;
+  transform:translate(-6px,-6px) rotate(-2.5deg) scale(1);
+  box-shadow:
+    16px 8px 0 var(--red),
+    8px 22px 0 var(--black-soft),
+    24px 28px 32px rgba(0,0,0,.5);
+}
+.member-card:nth-child(even):hover .member-reveal{
+  opacity:1;
+  transform:translate(6px,-6px) rotate(2.5deg) scale(1);
+  box-shadow:
+    -16px 8px 0 var(--red),
+    -8px 22px 0 var(--black-soft),
+    -24px 28px 32px rgba(0,0,0,.5);
+}
+
+/* Inner content wrapper — clip-path wipe from left */
+.member-reveal-body{
+  position:absolute;
+  top:44px;left:0;right:0;bottom:44px;
+  display:flex;
+  clip-path:polygon(0 0, 0 0, 0 100%, 0 100%);
+  transition:clip-path .6s cubic-bezier(.2,.9,.2,1) .18s;
+}
+.member-card:hover .member-reveal-body{
+  clip-path:polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.member-photo{
+  position:relative;
+  flex:0 0 52%;
+  background-size:cover;background-position:center;
+  background-color:var(--red-dark);
+  filter:contrast(1.15) saturate(1.1);
+  clip-path:polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+}
+.member-photo::before{
+  content:attr(data-initial);
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:900;
+  font-size:200px;letter-spacing:-.04em;line-height:1;
+  color:var(--off-white);opacity:.28;
+  text-shadow: 5px 5px 0 var(--red);
+}
+.member-photo::after{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.55) 0%, transparent 45%),
+    linear-gradient(135deg, var(--red-glow) 0%, transparent 65%);
+  mix-blend-mode:multiply;
+}
+.member-halftone{
+  position:absolute;inset:0;z-index:3;pointer-events:none;
+  background-image:radial-gradient(circle, var(--black) 1px, transparent 1.4px);
+  background-size:6px 6px;
+  opacity:.18;mix-blend-mode:multiply;
+}
+
+.member-bio{
+  flex:1 1 auto;
+  position:relative;z-index:3;
+  padding: 18px 14px 18px 22px;
+  display:flex;align-items:center;
+  color:var(--off-white);
+}
+.member-bio .txt{
+  font-size:13px;line-height:1.9;
+  color:var(--off-white);
+  max-width:none;
+  letter-spacing:.02em;
+}
+
+.member-topband,.member-botband{
+  position:absolute;left:0;right:0;height:44px;z-index:10;
+  display:flex;align-items:center;
+  font-family:var(--font-display);letter-spacing:.3em;font-weight:900;
+  font-size:15px;
+  pointer-events:none;
+}
+.member-topband{
+  top:0;padding:0 22px;
+  background:var(--red);color:var(--off-white);
+  justify-content:flex-start;
+  text-shadow:2px 2px 0 var(--black-soft);
+  border-bottom:2px solid var(--black-soft);
+}
+.member-botband{
+  bottom:0;padding:0 24px;
+  background:var(--black);color:var(--yellow);
+  justify-content:flex-end;
+  border-top:2px solid var(--red);
+  font-size:18px;
+  letter-spacing:.35em;
+}
+.member-botband .en{color:var(--yellow)}
+
+/* Base content stays visible behind the flyer (flyer is opaque + offset to reveal corner) */
+.member-card > h3,
+.member-card > p { position:relative; z-index:1; }
+
+@media (prefers-reduced-motion: reduce){
+  .member-reveal,.member-topband,.member-botband,.member-bio{transition:none!important}
+}
+
+/* Nav hover glow */
+.nav-list a:hover { color: var(--yellow); text-shadow: 0 0 8px rgba(201, 176, 55, 0.5); }
+
+/* Hero shapes float */
+.hero .shape { animation: shapeFloat 12s ease-in-out infinite alternate; }
+.hero .shape-2 { animation-duration: 16s; animation-delay: -4s; }
+.hero .shape-3 { animation-duration: 20s; animation-delay: -8s; }
+@keyframes shapeFloat {
+  0%   { translate: 0 0; }
+  50%  { translate: 12px -16px; }
+  100% { translate: -8px 14px; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .loader { display: none !important; }
+}
+
+/* ============================================
+   CUSTOM CURSOR (⑤ blend difference + ⑥ diamond→square)
+   ============================================ */
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor, html.has-cursor body { cursor: none; }
+  html.has-cursor a,
+  html.has-cursor button,
+  html.has-cursor input,
+  html.has-cursor textarea,
+  html.has-cursor select,
+  html.has-cursor [role="button"] { cursor: none; }
+}
+.cursor-blend,
+.cursor-ring,
+.cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  will-change: transform, width, height;
+}
+.cursor-blend {
+  z-index: 10000;
+  width: 50px; height: 50px;
+  background: #fff;
+  border-radius: 50%;
+  mix-blend-mode: difference;
+  transition: opacity 0.25s, width 0.3s cubic-bezier(0.2,0.9,0.2,1),
+              height 0.3s cubic-bezier(0.2,0.9,0.2,1);
+}
+.cursor-ring {
+  z-index: 10001;
+  width: 36px; height: 36px;
+  border: 1.5px solid #f0d060;
+  border-radius: 50%;
+  background: transparent;
+  mix-blend-mode: difference;
+  transition: opacity 0.25s, width 0.3s cubic-bezier(0.2,0.9,0.2,1),
+              height 0.3s cubic-bezier(0.2,0.9,0.2,1),
+              background 0.25s, border-color 0.25s;
+}
+.cursor-dot {
+  z-index: 10002;
+  width: 8px; height: 8px;
+  background: #f0d060;
+  border-radius: 50%;
+  mix-blend-mode: difference;
+  transition: opacity 0.2s, width 0.2s, height 0.2s;
+}
+html.has-cursor .cursor-blend,
+html.has-cursor .cursor-ring,
+html.has-cursor .cursor-dot { opacity: 1; }
+
+/* Hover state */
+html.cursor-hover .cursor-blend { width: 100px; height: 100px; }
+html.cursor-hover .cursor-ring  {
+  width: 80px; height: 80px;
+  background: rgba(240, 208, 96, 0.35);
+  border-color: #f0d060;
+}
+html.cursor-hover .cursor-dot { width: 6px; height: 6px; }
+
+/* Press state */
+html.cursor-down .cursor-blend { width: 40px; height: 40px; }
+html.cursor-down .cursor-ring  { width: 28px; height: 28px; }
+html.cursor-down .cursor-dot   { width: 12px; height: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blend, .cursor-ring, .cursor-dot { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING SPLASH -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-stripe loader-stripe-1"><span>STUDIO ARTS</span><span>★</span><span>LIVE YOUR ROLE</span><span>★</span><span>STUDIO ARTS</span><span>★</span><span>LIVE YOUR ROLE</span><span>★</span></div>
+  <div class="loader-stripe loader-stripe-2"><span>役を、生きろ。</span><span>◆</span><span>MURDER MYSTERY</span><span>◆</span><span>役を、生きろ。</span><span>◆</span><span>MURDER MYSTERY</span><span>◆</span></div>
+  <div class="loader-center">
+    <img class="loader-logo-img" src="images/logo.png" alt="STUDIO ARTS">
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    <div class="loader-txt">NOW LOADING<span class="loader-dots"></span></div>
+  </div>
+  <div class="loader-wipe"></div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor-blend" id="cursorBlend"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- NOISE OVERLAY -->
+<div class="noise"></div>
+
+<!-- THEME PANEL -->
+<div class="theme-backdrop" id="themeBackdrop"></div>
+<div class="theme-panel" id="themePanel" role="dialog" aria-label="テーマ選択">
+  <div class="theme-panel-header">
+    <h2 class="theme-panel-title">SELECT <span>THEME</span></h2>
+    <button class="theme-panel-close" id="themeClose" aria-label="閉じる">×</button>
+  </div>
+  <div class="theme-grid" id="themeGrid"></div>
+</div>
+<div class="theme-toast" id="themeToast"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">
+    <img class="logo-img" src="images/logo.png" alt="STUDIO ARTS">
+  </div>
+  <ul class="nav-list">
+    <li><a href="#about" data-num="01">ABOUT</a></li>
+    <li><a href="#members" data-num="02">MEMBERS</a></li>
+    <li><a href="#works" data-num="03">WORKS</a></li>
+    <li><a href="#news" data-num="04">NEWS</a></li>
+    <li><a href="#contact" data-num="05">CONTACT</a></li>
+    <li><a href="#sns" data-num="06">SNS</a></li>
+  </ul>
+  <a class="nav-cta" href="https://x.com/STUDIOARTS_" target="_blank" rel="noopener">FOLLOW ▶</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="halftone halftone-1"></div>
+    <div class="halftone halftone-2"></div>
+  </div>
+
+  <div class="hero-stripe">
+    <div class="hero-stripe-track">
+      <span>MURDER MYSTERY</span><span>★</span>
+      <span>STUDIO ARTS</span><span>★</span>
+      <span>SINCE 2024</span><span>★</span>
+      <span>LIVE YOUR ROLE</span><span>★</span>
+      <span>MURDER MYSTERY</span><span>★</span>
+      <span>STUDIO ARTS</span><span>★</span>
+      <span>SINCE 2024</span><span>★</span>
+      <span>LIVE YOUR ROLE</span><span>★</span>
+    </div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="badge-no">NO.<strong>001</strong></span>
+      <span class="badge-txt">OFFICIAL SITE</span>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="title-line line-1">役を、</span>
+      <span class="title-line line-2">生きろ<em>.</em></span>
+      <span class="title-en">LIVE YOUR ROLE.</span>
+    </h1>
+
+    <p class="hero-lead">
+      マーダーミステリー制作チーム<br>
+      <strong>STUDIO ARTS<br>/ スタジオアーツ</strong><br>
+      全16作品をUZUにて公開中。
+    </p>
+
+    <div class="hero-cta">
+      <a href="#works" class="btn btn-primary">
+        <span>WORKS</span>
+        <span class="btn-arrow">▶</span>
+      </a>
+      <a href="#contact" class="btn btn-ghost">
+        <span>CONTACT</span>
+        <span class="btn-arrow">▶</span>
+      </a>
+    </div>
+
+    <div class="hero-meta">
+      <div class="meta-item"><span class="meta-num">16</span><span class="meta-label">WORKS</span></div>
+      <div class="meta-item"><span class="meta-num">2</span><span class="meta-label">YEARS</span></div>
+      <div class="meta-item"><span class="meta-num">2.4K+</span><span class="meta-label">FANS</span></div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about" class="section about">
+  <div class="section-head">
+    <span class="section-no">/ 01</span>
+    <h2 class="section-title">
+      <span class="jp">私たちについて</span>
+      <span class="en">ABOUT US</span>
+    </h2>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="about-lead">
+        <strong>STUDIO ARTS</strong>は、<br>
+        物語を、演じる者たちへ贈る。
+      </p>
+      <p>
+        2024年、3人のクリエイターによって結成されたマーダーミステリー制作チーム。<br>
+        和風、ゴシック、スチームパンク、サイバーパンク──多彩な世界観で、プレイヤーの心を盗む物語を紡ぎ続けています。
+      </p>
+      <p>
+        結成から2年、UZUアプリにて15作品、UZU TOKYOにて1作品を公開。<br>
+        テストプレイヤーの声を大切にし、"遊ばれて完成する" マダミスを目指しています。
+      </p>
+    </div>
+
+    <div class="about-cards">
+      <article class="pillar-card">
+        <span class="pillar-no">01</span>
+        <h3>物語重視</h3>
+        <p>プレイヤーが"主人公になる"物語体験を。世界観と感情の揺さぶりに徹底的にこだわります。</p>
+      </article>
+      <article class="pillar-card">
+        <span class="pillar-no">02</span>
+        <h3>推理と駆け引き</h3>
+        <p>王道の論理推理から、心理戦までを緻密に設計。プレイヤー同士が交わる瞬間にドラマを。</p>
+      </article>
+      <article class="pillar-card">
+        <span class="pillar-no">03</span>
+        <h3>RPの歓び</h3>
+        <p>読み合わせ・ロールプレイを楽しむための繊細なキャラクター造形。演じる悦びを届けます。</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBERS -->
+<section id="members" class="section members-section">
+  <div class="section-head">
+    <span class="section-no">/ 02</span>
+    <h2 class="section-title">
+      <span class="jp">メンバー紹介</span>
+      <span class="en">MEMBERS</span>
+    </h2>
+  </div>
+
+  <div class="members-grid">
+    <article class="member-card" style="--rot:-1deg">
+      <span class="member-no">01</span>
+      <h3>てっく</h3>
+      <p>緻密な仕掛けの向こうで、物語の輪郭を研ぎ澄ます。</p>
+      <div class="member-reveal">
+        <div class="member-topband">PROFILE / 01</div>
+        <div class="member-reveal-body">
+          <div class="member-bio"><div class="txt">「マダミスって、結局は“構造”だと思ってるんです。伏線の置き方ひとつで、プレイヤーの気持ちの揺れ方はまるで変わる。だからこそ、派手さよりも緻密さ。最後の一行で景色が反転するような、そんな仕掛けを静かに組み上げたい。」</div></div>
+          <div class="member-photo" style="background-image:url('images/tecklogo.png'); background-position:center top"></div>
+        </div>
+        <div class="member-halftone"></div>
+        <div class="member-botband"><span class="en">TECK</span></div>
+      </div>
+    </article>
+
+    <article class="member-card" style="--rot:1.1deg">
+      <span class="member-no">02</span>
+      <h3>ジンソツ</h3>
+      <p>熱量と遊び心で、盤上にドラマの火花を散らす。</p>
+      <div class="member-reveal">
+        <div class="member-topband">PROFILE / 02</div>
+        <div class="member-reveal-body">
+          <div class="member-bio"><div class="txt">「考え込むより、まず飛び込むタイプです。場が停滞してきたなと思ったら、多少強引でも火をつけにいく。熱量って伝染するものだから、自分が一番楽しんでいれば、周りの景色も絶対に変わる。遊び心と本気、その両方を同じ温度で持っていたい。」</div></div>
+          <div class="member-photo" style="background-image:url('images/ジンソツ.jpg'); background-position:center 45%"></div>
+        </div>
+        <div class="member-halftone"></div>
+        <div class="member-botband"><span class="en">JINSOTSU</span></div>
+      </div>
+    </article>
+
+    <article class="member-card" style="--rot:-0.8deg">
+      <span class="member-no">03</span>
+      <h3>なみそたん</h3>
+      <p>やわらかな感性で、余韻の残る情景を編み上げる。</p>
+      <div class="member-reveal">
+        <div class="member-topband">PROFILE / 03</div>
+        <div class="member-reveal-body">
+          <div class="member-bio"><div class="txt">「物語って、派手に盛り上がる瞬間よりも、ふとした沈黙や目線のほうが心に残ったりするんですよね。だから私は、強く主張することよりも“余韻”を大事にしたい。読み終えたあとに胸の奥があたたかくなったり、ちょっと切なくなったり。そういうやわらかい感情の層を、丁寧に編んでいけたらと思っています。」</div></div>
+          <div class="member-photo" style="background-image:url('images/なみそたん.jpg'); background-position:center 45%"></div>
+        </div>
+        <div class="member-halftone"></div>
+        <div class="member-botband"><span class="en">NAMISOTAN</span></div>
+      </div>
+    </article>
+
+    <article class="member-card" style="--rot:1deg">
+      <span class="member-no">04</span>
+      <h3>宮</h3>
+      <p>静かな視線で、物語の芯にある感情を掬い上げる。</p>
+      <div class="member-reveal">
+        <div class="member-topband">PROFILE / 04</div>
+        <div class="member-reveal-body">
+          <div class="member-bio"><div class="txt">「僕は、しゃべる量で存在感を出すタイプじゃないんです。ただ、相手がなぜその言葉を選んだのか、なぜそこで黙ったのか——そこはちゃんと見ている。表面の台詞だけじゃなくて、その奥にある揺らぎまで拾えたとき、物語は初めて“動き出す”。そういう瞬間に立ち会うのが、一番好きですね。」</div></div>
+          <div class="member-photo" style="background-image:url('images/宮.png'); background-position:center 75%"></div>
+        </div>
+        <div class="member-halftone"></div>
+        <div class="member-botband"><span class="en">MIYA</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="members-note-panel">
+    <p>
+      それぞれ異なる感性を持つ4人が集まり、推理、駆け引き、ロールプレイ、
+      そして忘れがたい物語体験を磨き続けています。
+    </p>
+    <a class="btn btn-primary btn-large" href="#works">
+      <span>作品を見る</span>
+      <span class="btn-arrow">▶</span>
+    </a>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section id="works" class="section works">
+  <div class="section-head">
+    <span class="section-no">/ 03</span>
+    <h2 class="section-title">
+      <span class="jp">作品一覧</span>
+      <span class="en">WORKS</span>
+    </h2>
+  </div>
+
+  <div class="works-grid">
+
+    <article class="work-card" style="--rot:-1.2deg">
+      <div class="work-img" style="background-image:url('images/8.jpg')"></div>
+      <div class="work-info">
+        <span class="work-no">#01</span>
+        <h3>黒煙街のエリー</h3>
+        <p class="work-tags"><span>スチームパンク</span><span>駆け引き×RP</span><span>特殊RP</span></p>
+        <p class="work-desc">煤煙けぶる機械仕掛けの街。少女が銃口で切り拓く、駆け引きの物語。</p>
+        <p class="work-meta">UZU公開中</p>
+      </div>
+    </article>
+
+    <article class="work-card" style="--rot:1.5deg">
+      <div class="work-img" style="background-image:url('images/10.jpg')"></div>
+      <div class="work-info">
+        <span class="work-no">#02</span>
+        <h3>CRADLE MEMOIR</h3>
+        <p class="work-tags"><span>ゴシック</span><span>王道推理</span></p>
+        <p class="work-desc">凶器は、呪い。<br>深き黒の揺籃で綴られる、哀しき回想録。</p>
+        <p class="work-meta">UZU公開中</p>
+      </div>
+    </article>
+
+    <article class="work-card" style="--rot:-0.8deg">
+      <div class="work-img" style="background-image:url('images/11.jpg')"></div>
+      <div class="work-info">
+        <span class="work-no">#03</span>
+        <h3>ペトリコールを纏って</h3>
+        <p class="work-tags"><span>アンニュイ</span><span>エモーショナル</span></p>
+        <p class="work-desc">雨上がりの匂いに包まれて。<br>アンニュイな青年が抱える、静かな真実。</p>
+        <p class="work-meta">UZU公開中</p>
+      </div>
+    </article>
+
+    <article class="work-card" style="--rot:1.2deg">
+      <div class="work-img" style="background-image:url('images/１０８.jpg')"></div>
+      <div class="work-info">
+        <span class="work-no">#04</span>
+        <h3>妖の國 <span class="sub">ー百八夜と泡沫の結びー</span></h3>
+        <p class="work-tags"><span>和風</span><span>サイバーパンク</span><span>RP・物語重視</span></p>
+        <p class="work-desc">百八の夜を越え、泡沫の結びへ。<br>幻想の街に咲く、ネオンと桜のマダミス。</p>
+        <p class="work-meta">UZU公開中／RP部門</p>
+      </div>
+    </article>
+
+    <article class="work-card" style="--rot:-1deg">
+      <div class="work-img" style="background-image:url('images/華恋.jpg')"></div>
+      <div class="work-info">
+        <span class="work-no">#05</span>
+        <h3>華唄こいこい、毒味で一杯</h3>
+        <p class="work-tags"><span>ペアマダミス</span><span>和風</span><span>駆け引き</span></p>
+        <p class="work-desc">花札に込めた恋と、毒の一杯。<br>2人で紡ぐ、艶やかな駆け引き物語。</p>
+        <p class="work-meta">UZU公開中</p>
+      </div>
+    </article>
+
+    <article class="work-card work-card-text" style="--rot:1deg">
+      <div class="work-img" style="background-image:url('images/qu.jpg')"></div>
+      <div class="work-info">
+        <span class="work-no">#06</span>
+        <h3>QUARTET ADVENTURE</h3>
+        <p class="work-tags"><span>新作</span><span>冒険</span></p>
+        <p class="work-desc">四重奏が奏でる、冒険と謎の旋律。<br>最新作、絶賛公開中。</p>
+        <p class="work-meta">UZU公開中</p>
+      </div>
+    </article>
+
+  </div>
+
+  <p class="works-more">
+    ─── and more... <strong>全16作品</strong>、UZUアプリにて公開中 ───
+  </p>
+</section>
+
+<!-- NEWS -->
+<section id="news" class="section news">
+  <div class="section-head">
+    <span class="section-no">/ 04</span>
+    <h2 class="section-title">
+      <span class="jp">お知らせ</span>
+      <span class="en">NEWS &amp; EVENTS</span>
+    </h2>
+  </div>
+
+  <ul class="news-list">
+    <li class="news-item">
+      <span class="news-date">2026.04</span>
+      <span class="news-cat">ANNIVERSARY</span>
+      <span class="news-title">STUDIO ARTS 結成2周年🎉 感謝祭を開催中。リポストキャンペーン＆セール実施。</span>
+    </li>
+    <li class="news-item">
+      <span class="news-date">2026.04</span>
+      <span class="news-cat">RELEASE</span>
+      <span class="news-title">新作『QUARTET ADVENTURE』UZUにて公開開始。</span>
+    </li>
+    <li class="news-item">
+      <span class="news-date">ONGOING</span>
+      <span class="news-cat">RECRUIT</span>
+      <span class="news-title">テストプレイヤー随時募集中。ご応募はXのDMまで。</span>
+    </li>
+    <li class="news-item">
+      <span class="news-date">ONGOING</span>
+      <span class="news-cat">INFO</span>
+      <span class="news-title">UZU TOKYOにて対面マダミス1作品を公開中。</span>
+    </li>
+  </ul>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section contact">
+  <div class="section-head">
+    <span class="section-no">/ 05</span>
+    <h2 class="section-title">
+      <span class="jp">お問い合わせ</span>
+      <span class="en">CONTACT</span>
+    </h2>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h3>CONNECT WITH US.</h3>
+      <p>制作依頼、テストプレイ応募、メディア掲載、その他のお問い合わせはXのDMにてお気軽にどうぞ。</p>
+      <a class="btn btn-primary btn-large" href="https://x.com/STUDIOARTS_" target="_blank" rel="noopener">
+        <span>X (Twitter) DM</span>
+        <span class="btn-arrow">▶</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- SNS -->
+<section id="sns" class="section sns">
+  <div class="section-head">
+    <span class="section-no">/ 06</span>
+    <h2 class="section-title">
+      <span class="jp">SNS・プラットフォーム</span>
+      <span class="en">FOLLOW US</span>
+    </h2>
+  </div>
+
+  <div class="sns-grid">
+    <a href="https://x.com/STUDIOARTS_" target="_blank" rel="noopener" class="sns-card sns-x">
+      <span class="sns-icon">𝕏</span>
+      <span class="sns-name">X / Twitter</span>
+      <span class="sns-handle">@STUDIOARTS_</span>
+      <span class="sns-arrow">▶</span>
+    </a>
+    <a href="https://uzu.app/" target="_blank" rel="noopener" class="sns-card sns-uzu">
+      <span class="sns-icon">◎</span>
+      <span class="sns-name">UZU APP</span>
+      <span class="sns-handle">全16作品 公開中</span>
+      <span class="sns-arrow">▶</span>
+    </a>
+    <a href="https://uzu-tokyo.com/" target="_blank" rel="noopener" class="sns-card sns-uzu-tokyo">
+      <span class="sns-icon">◈</span>
+      <span class="sns-name">UZU TOKYO</span>
+      <span class="sns-handle">対面公演1作品</span>
+      <span class="sns-arrow">▶</span>
+    </a>
+  </div>
+
+  <div class="sns-timeline">
+    <h3 class="timeline-title">LATEST POSTS</h3>
+    <a class="twitter-timeline" data-theme="dark" data-chrome="noheader nofooter transparent" data-height="600"
+       href="https://twitter.com/STUDIOARTS_?ref_src=twsrc%5Etfw">Tweets by STUDIOARTS_</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-bg-shape"></div>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img class="logo-img" src="images/logo.png" alt="STUDIO ARTS">
+    </div>
+    <p class="footer-tagline">役を、生きろ。 — LIVE YOUR ROLE.</p>
+    <p class="footer-copy">© 2024-2026 STUDIO ARTS. ALL RIGHTS RESERVED.</p>
+  </div>
+</footer>
+
+<script>
+// ============================================
+// STUDIO ARTS - Interactions
+// ============================================
+
+// Smooth reveal on scroll
+const revealTargets = document.querySelectorAll(
+  '.work-card, .pillar-card, .member-card, .members-note-panel, .news-item, .sns-card, .section-head, .about-text'
+);
+revealTargets.forEach(el => el.classList.add('reveal'));
+
+// Inject 3 sweep lines into each .section-head
+document.querySelectorAll('.section-head').forEach(h => {
+  for (let i = 1; i <= 3; i++) {
+    const s = document.createElement('span');
+    s.className = 'sh-line sh-line-' + i;
+    h.prepend(s);
+  }
+});
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+revealTargets.forEach(el => io.observe(el));
+
+// Contact form handler (demo — no backend)
+
+// Nav hide on scroll down, show on scroll up
+let lastY = 0;
+const nav = document.querySelector('.nav');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > 100 && y > lastY) {
+    nav.style.transform = 'translateY(-110%)';
+  } else {
+    nav.style.transform = 'translateY(0)';
+  }
+  nav.style.transition = 'transform 0.3s';
+  lastY = y;
+});
+
+// ============================================
+// THEME PANEL
+// ============================================
+const THEME_CATEGORIES = [
+  { id: 'gothic',   icon: '🥀', title: 'GOTHIC',     sub: 'ゴシック・耽美' },
+  { id: 'noir',     icon: '🎩', title: 'NOIR',       sub: '探偵・ノワール' },
+  { id: 'japan',    icon: '⛩',  title: 'JAPAN',      sub: '和風・時代劇' },
+  { id: 'crime',    icon: '🩸', title: 'CRIME',      sub: 'クライム・血' },
+  { id: 'mystic',   icon: '🌿', title: 'MYSTIC',     sub: '神秘・自然' },
+  { id: 'industry', icon: '⚙',  title: 'INDUSTRY',   sub: '工業・錆' },
+  { id: 'cool',     icon: '❄',  title: 'COOL',       sub: 'クール・スタイリッシュ' },
+  { id: 'neon',     icon: '⚡', title: 'NEON',       sub: 'ネオン・サイバー' },
+];
+const THEMES = [
+  // GOTHIC
+  { id: 'default',    cat: 'gothic',   name: 'ゴシック・ヴィオレ',    desc: '耽美／深紫×古金',       colors: ['#2D1B3D','#C9B037','#0D0B10','#E5DBC9'] },
+  { id: 'mahoyaku',   cat: 'gothic',   name: 'ロイヤル・グリモワール', desc: '魔導書／深青×金',       colors: ['#004986','#debb54','#000000','#f5e9b8'] },
+  { id: 'amethyst',   cat: 'gothic',   name: 'アメジスト・ヴェール',  desc: '妖しい紫水晶／紫×銀',   colors: ['#5B3A8A','#D4C1E8','#0F0A1A','#F0E6F5'] },
+  { id: 'sakura',     cat: 'gothic',   name: 'サクラ・ブラッド',      desc: '妖艶／桜紅×淡桜',       colors: ['#8B1A3B','#F5C6D0','#1A0E14','#F5E6DC'] },
+  // NOIR
+  { id: 'noir',       cat: 'noir',     name: 'ミッドナイト・ノワール', desc: '夜霧／濃紺×古金',       colors: ['#0F2A4D','#C9A86A','#0A0A0A','#E8E2D0'] },
+  { id: 'paper',      cat: 'noir',     name: 'ペーパー・ノワール',    desc: '古書×インク／探偵',     colors: ['#5a4a2d','#D8B35A','#2B2419','#F2EBD5'] },
+  { id: 'emerald',    cat: 'noir',     name: 'エメラルド・ミステリー', desc: 'クラシック／深緑×真鍮', colors: ['#0B3D2E','#D4A84B','#0a0a0a','#EFE6D2'] },
+  // JAPAN
+  { id: 'wafu',       cat: 'japan',    name: '和風ミステリー',        desc: '時代劇／朱×金茶×藍墨',  colors: ['#C8102E','#E8C15F','#1B2631','#F4EFE0'] },
+  // CRIME
+  { id: 'crimson',    cat: 'crime',    name: 'クリムゾン・ノワール',  desc: '真紅×黄',               colors: ['#e60012','#f5d547','#0a0a0a','#f2ead3'] },
+  { id: 'mono',       cat: 'crime',    name: 'モノクローム・アサシン', desc: '反転／血紅×生成り',     colors: ['#B91C1C','#1C1C1C','#F5F1E8','#E5E5E5'] },
+  { id: 'hemoglobin', cat: 'crime',    name: 'ヘモグロビン',          desc: 'クライム／血赤×氷白',   colors: ['#A0152A','#F5F8FC','#1a0608','#E8EEF4'] },
+  { id: 'bloodmoon',  cat: 'crime',    name: 'ブラッド・ムーン',      desc: '夜の血月／深紅×橙',     colors: ['#7A0C2E','#E86A1A','#0A0505','#F5E4D0'] },
+  // MYSTIC
+  { id: 'forest',     cat: 'mystic',   name: 'フォレスト・ウィッチ',  desc: '森の魔女／苔緑×琥珀',   colors: ['#1F3A2E','#D9A96A','#0a120d','#E8DFCB'] },
+  { id: 'abyss',      cat: 'mystic',   name: 'アビス・ティール',      desc: '深海の神秘／青緑×銀',   colors: ['#0D4F5C','#C0C5CE','#040e12','#E6EEF0'] },
+  // INDUSTRY
+  { id: 'rust',       cat: 'industry', name: 'アイアン・ラスト',      desc: '錆と鉄／工業ホラー',    colors: ['#5C3A2E','#B8763F','#1a120d','#EFE0CE'] },
+  { id: 'onyx',       cat: 'industry', name: 'オニキス・ゴールド',    desc: '黒耀石と純金／高級',    colors: ['#000000','#D4AF37','#0c0c0c','#F5EBC0'] },
+  // COOL
+  { id: 'chrome',     cat: 'cool',     name: 'ミッドナイト・クローム', desc: '夜の金属／漆黒×銀',     colors: ['#1a1d26','#C5CDD9','#0A0A0F','#E8ECF2'] },
+  { id: 'carbon',     cat: 'cool',     name: 'カーボン・スチール',    desc: '炭素繊維／鋼×翠青',     colors: ['#1E2126','#6BB8D6','#08090c','#E1EBF2'] },
+  { id: 'slate',      cat: 'cool',     name: 'スレート・ミニマル',    desc: '石板／灰×黄銅',         colors: ['#2B2F35','#B8936A','#0d0f12','#EFE9DE'] },
+  { id: 'arctic',     cat: 'cool',     name: 'アークティック・サファイア', desc: '極夜／深青×氷',     colors: ['#0C1B2E','#4A90C0','#020611','#EAF2FB'] },
+  { id: 'platinum',   cat: 'cool',     name: 'プラチナム・オブシディアン', desc: '黒曜石／白金×墨',   colors: ['#0E0E10','#BEC2C9','#050505','#F1F3F6'] },
+  { id: 'lapis',      cat: 'cool',     name: 'アイス・ラピス',        desc: '氷塊×群青／北欧',       colors: ['#0A1F3D','#7FC7D9','#020814','#E4F1F6'] },
+  // NEON
+  { id: 'cyber',      cat: 'neon',     name: 'サイバー・ネオン',      desc: '電脳／マゼンタ×シアン', colors: ['#FF2E8A','#00D9E8','#050A1F','#F4EFE0'] },
+  { id: 'tokyo',      cat: 'neon',     name: 'ネオン・トウキョウ',    desc: '渋谷の夜／紫×桃×空',    colors: ['#2B0B4F','#FF4FA8','#08031a','#F0E6FF'] },
+];
+const THEME_KEY = 'sa-theme';
+
+function applyTheme(id) {
+  document.body.classList.remove(...THEMES.map(t => `theme-${t.id}`));
+  if (id && id !== 'default') document.body.classList.add(`theme-${id}`);
+  localStorage.setItem(THEME_KEY, id);
+  document.querySelectorAll('.theme-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.theme === id);
+  });
+  const theme = THEMES.find(t => t.id === id);
+  if (theme) showToast(`▶ ${theme.name}`);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('themeToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._tid);
+  showToast._tid = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function buildThemeGrid() {
+  const grid = document.getElementById('themeGrid');
+  if (!grid) return;
+  grid.innerHTML = THEME_CATEGORIES.map(cat => {
+    const items = THEMES.filter(t => t.cat === cat.id);
+    if (!items.length) return '';
+    return `
+      <div class="theme-group">
+        <div class="theme-group-head">
+          <span class="theme-group-icon">${cat.icon}</span>
+          <span class="theme-group-title">${cat.title}</span>
+          <span class="theme-group-sub">${cat.sub}</span>
+        </div>
+        <div class="theme-group-body">
+          ${items.map(t => `
+            <button class="theme-card" data-theme="${t.id}">
+              <div class="theme-card-swatches">
+                ${t.colors.map(c => `<span style="background:${c}"></span>`).join('')}
+              </div>
+              <div class="theme-card-name">${t.name}</div>
+              <div class="theme-card-desc">${t.desc}</div>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+  grid.querySelectorAll('.theme-card').forEach(btn => {
+    btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+  });
+}
+
+function openPanel() {
+  document.getElementById('themeBackdrop')?.classList.add('open');
+  document.getElementById('themePanel')?.classList.add('open');
+}
+function closePanel() {
+  document.getElementById('themeBackdrop')?.classList.remove('open');
+  document.getElementById('themePanel')?.classList.remove('open');
+}
+
+(function initTheme() {
+  buildThemeGrid();
+  const saved = localStorage.getItem(THEME_KEY) || 'default';
+  if (saved !== 'default') document.body.classList.add(`theme-${saved}`);
+  document.querySelectorAll('.theme-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.theme === saved);
+  });
+
+  document.querySelector('.nav-logo')?.addEventListener('click', openPanel);
+  document.getElementById('themeClose')?.addEventListener('click', closePanel);
+  document.getElementById('themeBackdrop')?.addEventListener('click', closePanel);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+})();
+
+// Parallax on hero shapes
+const shapes = document.querySelectorAll('.hero .shape');
+window.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 2;
+  const y = (e.clientY / window.innerHeight - 0.5) * 2;
+  shapes.forEach((s, i) => {
+    const depth = (i + 1) * 6;
+    s.style.transform = `translate(${x * depth}px, ${y * depth}px)`;
+  });
+});
+
+// ============================================
+// LOADER — hide after animation completes
+// ============================================
+window.addEventListener('load', () => {
+  const loader = document.getElementById('loader');
+  if (!loader) return;
+  setTimeout(() => {
+    loader.classList.add('done');
+    loader.style.display = 'none';
+  }, 2600);
+});
+
+// ============================================
+// CUSTOM CURSOR (⑤ blend + ⑥ diamond)
+// ============================================
+(function customCursor() {
+  // Only on devices that have fine pointer (mouse)
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const blend = document.getElementById('cursorBlend');
+  const ring  = document.getElementById('cursorRing');
+  const dot   = document.getElementById('cursorDot');
+  if (!blend || !ring || !dot) return;
+
+  document.documentElement.classList.add('has-cursor');
+
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let bx = mx, by = my; // blend — slow lag
+  let rx = mx, ry = my; // ring  — medium lag
+
+  window.addEventListener('mousemove', (e) => {
+    mx = e.clientX; my = e.clientY;
+    // dot: precise (no easing)
+    dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+  });
+
+  window.addEventListener('mousedown', () => document.documentElement.classList.add('cursor-down'));
+  window.addEventListener('mouseup',   () => document.documentElement.classList.remove('cursor-down'));
+
+  // Hover state for interactive elements
+  const hoverSelector = 'a, button, .work-card, .member-card, .theme-card, .nav-logo, [role="button"], input[type="submit"]';
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest(hoverSelector)) {
+      document.documentElement.classList.add('cursor-hover');
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest(hoverSelector) && !e.relatedTarget?.closest(hoverSelector)) {
+      document.documentElement.classList.remove('cursor-hover');
+    }
+  });
+
+  function tick() {
+    // ring: medium ease (~0.22)
+    rx += (mx - rx) * 0.22;
+    ry += (my - ry) * 0.22;
+    // blend: slow ease (~0.14)
+    bx += (mx - bx) * 0.14;
+    by += (my - by) * 0.14;
+    ring.style.transform  = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+    blend.style.transform = `translate(${bx}px, ${by}px) translate(-50%, -50%)`;
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  // Hide when mouse leaves window
+  document.addEventListener('mouseleave', () => document.documentElement.classList.remove('has-cursor'));
+  document.addEventListener('mouseenter', () => document.documentElement.classList.add('has-cursor'));
+})();
+
+// ============================================
+// SCROLL PROGRESS BAR
+// ============================================
+(function scrollProgress() {
+  const bar = document.getElementById('scrollProgress');
+  if (!bar) return;
+  function update() {
+    const h = document.documentElement;
+    const scrolled = h.scrollTop;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? (scrolled / max) * 100 : 0;
+    bar.style.setProperty('--sp', pct + '%');
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>
