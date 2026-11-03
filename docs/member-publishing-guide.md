@@ -22,11 +22,10 @@
 
 1. **GitHub アカウントを作る**（持っていればそのままでOK）
 2. **ユーザー名を管理担当に送る** → Organization に招待が届くので承認する
-3. **二段階認証をオンにする（必須）**
+3. **二段階認証をオンにする（強く推奨）**
    Settings → Password and authentication → Two-factor authentication
-   - 方法は **認証アプリ**（Google Authenticator など）、**GitHub Mobile**、**パスキー** のどれか
-   - **SMS（ショートメッセージ）は使えません。** SMS で設定済みの人は、上のどれかに切り替えてください
-   - 二段階認証がオフだと、招待されても作品の置き場所に入れません
+   - 認証アプリ（Google Authenticator など）、GitHub Mobile、パスキーがおすすめ
+   - アカウントが乗っ取られると、チームの作品も書き換えられてしまうため
 4. **メールアドレスを非公開にする**
    Settings → Emails →「Keep my email addresses private」をオン
    同じ画面に表示される `数字+ユーザー名@users.noreply.github.com` を控えておく
