@@ -19,7 +19,7 @@
 ## 1. Organization を作る
 - GitHub 右上の ＋ → **New organization** → **Free**
 - Organization 名：`studio-arts-jp`（作成済み）
-- **Settings → Authentication security → Require two-factor authentication** をオン（推奨）
+- **Settings → Authentication security → Require two-factor authentication** をオン、**Only allow secure two-factor methods** もオン（設定済み。メンバーは SMS 以外の方法が必要）
 - **People** で自分の表示を **Private** に（個人アカウントをたどられにくくする）
 - Owner は自分＋予備1人まで。メンバーは **Member** で招待
 
