@@ -1,7 +1,7 @@
 # STUDIO ARTS 作品公開ガイド（メンバー向け）
 
 診断・特設ページなどを、公式ドメインの下で公開するための手順です。
-`studio-arts.jp` と `［Organization名］` は管理担当から伝えられたものに読み替えてください。
+`studio-arts.jp` と `studio-arts-jp` は管理担当から伝えられたものに読み替えてください。
 
 ---
 
@@ -9,9 +9,9 @@
 
 | 置き場所（GitHub） | 公開URL |
 |---|---|
-| `［Organization名］/［Organization名］.github.io` | `https://studio-arts.jp/`（トップ。管理担当のみ） |
-| `［Organization名］/ryo-shindan` | `https://studio-arts.jp/ryo-shindan/` |
-| `［Organization名］/作品名` | `https://studio-arts.jp/作品名/` |
+| `studio-arts-jp/studio-arts-jp.github.io` | `https://studio-arts.jp/`（トップ。管理担当のみ） |
+| `studio-arts-jp/ryo-shindan` | `https://studio-arts.jp/ryo-shindan/` |
+| `studio-arts-jp/作品名` | `https://studio-arts.jp/作品名/` |
 
 - 作品名（リポジトリ名）は **半角英小文字・数字・ハイフンだけ** にしてください（例：`ryo-shindan`）。これがそのままURLになります。
 - ドメインの設定は不要です。Organization の中に作れば、自動でこのURLになります。
@@ -39,7 +39,7 @@
 ## 作品を公開する手順
 
 1. Organization のページで **New repository**
-   - Owner：`［Organization名］`
+   - Owner：`studio-arts-jp`
    - Repository name：作品名（例：`ryo-shindan`）
    - **Public** を選ぶ
 2. **Add file → Upload files** で、作品のフォルダの中身をまとめてドラッグ＆ドロップ
@@ -77,7 +77,7 @@ Settings → Pages で Unpublish、または管理担当に連絡してくださ
 
 ## やらないでほしいこと
 
-- トップページのリポジトリ（`［Organization名］.github.io`）の編集
+- トップページのリポジトリ（`studio-arts-jp.github.io`）の編集
 - リポジトリの **Settings → Pages の Custom domain** 欄の入力（空欄のままでOK）
 - Organization の設定変更
 
