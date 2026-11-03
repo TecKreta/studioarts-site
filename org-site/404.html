@@ -40,17 +40,10 @@ img{display:block;max-width:100%}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.06;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-/* the stage: a warm light that follows the cursor and reveals what is written in the dark */
+/* the stage: a warm light that follows the cursor */
 .stage{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
 .light{position:absolute;inset:0;z-index:-2;pointer-events:none;
   background:radial-gradient(circle var(--r) at var(--x) var(--y),rgba(231,205,152,.10),rgba(231,205,152,.03) 55%,transparent 75%)}
-.hidden-ink{position:absolute;inset:0;z-index:-1;pointer-events:none;
-  -webkit-mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),#000 0%,rgba(0,0,0,.6) 40%,transparent 72%);
-          mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),#000 0%,rgba(0,0,0,.6) 40%,transparent 72%)}
-.hidden-ink span{position:absolute;font-family:var(--jp);color:rgba(231,205,152,.28);white-space:nowrap}
-.hidden-ink .big{font-weight:800;font-size:clamp(120px,22vw,320px);letter-spacing:.08em;writing-mode:vertical-rl;right:6vw;top:50%;transform:translateY(-50%);color:rgba(231,205,152,.07)}
-.hidden-ink .note{font-family:'Zen Kaku Gothic New',sans-serif;font-size:clamp(13px,1.2vw,16px);letter-spacing:.14em}
-
 .hd{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px var(--gutter)}
 .hd img{height:26px;width:auto}
 
@@ -94,7 +87,6 @@ h1{margin-top:26px}
 @media (max-width:640px){
   body{font-size:14px}
   :root{--r:170px}
-  .hidden-ink .big{right:-4vw;opacity:.8}
   .btn{padding:12px 16px;font-size:12px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -105,12 +97,6 @@ h1{margin-top:26px}
 <body>
 <div class="stage" id="stage">
   <div class="light" aria-hidden="true"></div>
-  <div class="hidden-ink" aria-hidden="true">
-    <span class="big">不在</span>
-    <span class="note" style="left:58%;top:18%">ここには、誰もいなかった。</span>
-    <span class="note" style="left:8%;top:78%">足跡は、入口で途切れている。</span>
-    <span class="note" style="left:64%;top:84%">手がかりは、別の部屋に。</span>
-  </div>
 
   <header class="hd">
     <img src="/images/logo-light.png" alt="STUDIO ARTS" width="800" height="153">
@@ -133,7 +119,6 @@ h1{margin-top:26px}
 
   <footer class="ft">
     <span>© 2024–2026 STUDIO ARTS.</span>
-    <span>役を、生きろ。</span>
   </footer>
 </div>
 
