@@ -1,17 +1,17 @@
 # 公式ドメイン × GitHub Pages 設定手順（管理担当向け）
 
-トップに「準備中」ページ、各作品を `https://［ドメイン］/作品名/` で公開するための初期設定です。
-仮に ドメイン＝`［ドメイン］`、Organization＝`［Organization名］` と書いています。
+トップに「準備中」ページ、各作品を `https://studio-arts.jp/作品名/` で公開するための初期設定です。
+仮に ドメイン＝`studio-arts.jp`、Organization＝`［Organization名］` と書いています。
 
 ```
-訪問者 → ［ドメイン］
+訪問者 → studio-arts.jp
           │ ① Xserver の DNS が GitHub Pages を指す
           ▼
        GitHub Pages
           │ ② 確認済みドメインとして ［Organization名］ に紐づく
           ▼
-  ［Organization名］.github.io     → https://［ドメイン］/            （準備中ページ → 将来HP）
-  ［Organization名］/ryo-shindan   → https://［ドメイン］/ryo-shindan/
+  ［Organization名］.github.io     → https://studio-arts.jp/            （準備中ページ → 将来HP）
+  ［Organization名］/ryo-shindan   → https://studio-arts.jp/ryo-shindan/
 ```
 
 ---
@@ -30,7 +30,7 @@
 - **Settings → Pages**：Source を `main` ／ `/(root)` にして Save
 
 ## 3. ドメインの所有確認（乗っ取り防止）
-- Organization の **Settings → Pages → Add a domain** に `［ドメイン］` を入力
+- Organization の **Settings → Pages → Add a domain** に `studio-arts.jp` を入力
 - 表示される **TXT レコードの名前と値** を控える
 
 ## 4. Xserver の DNS 設定
@@ -50,13 +50,13 @@ Xserver のドメイン管理画面 → 対象ドメイン → **DNSレコード
 
 ## 5. GitHub 側で接続
 1. 手順3の画面で **Verify**（反映待ちで失敗したら時間をおいて再実行）
-2. `［Organization名］.github.io` の **Settings → Pages → Custom domain** に `［ドメイン］` → Save
+2. `［Organization名］.github.io` の **Settings → Pages → Custom domain** に `studio-arts.jp` → Save
 3. チェックが通ったら **Enforce HTTPS** をオン（証明書発行に最大1日ほど）
 
 ## 6. 確認
-- `https://［ドメイン］/` → 準備中ページ
-- `https://［ドメイン］/存在しないURL` → 404 ページ
-- 作品リポジトリで Pages をオン → `https://［ドメイン］/作品名/`
+- `https://studio-arts.jp/` → 準備中ページ
+- `https://studio-arts.jp/存在しないURL` → 404 ページ
+- 作品リポジトリで Pages をオン → `https://studio-arts.jp/作品名/`
 
 ---
 

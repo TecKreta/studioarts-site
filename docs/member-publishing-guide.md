@@ -1,7 +1,7 @@
 # STUDIO ARTS 作品公開ガイド（メンバー向け）
 
 診断・特設ページなどを、公式ドメインの下で公開するための手順です。
-`［ドメイン］` と `［Organization名］` は管理担当から伝えられたものに読み替えてください。
+`studio-arts.jp` と `［Organization名］` は管理担当から伝えられたものに読み替えてください。
 
 ---
 
@@ -9,9 +9,9 @@
 
 | 置き場所（GitHub） | 公開URL |
 |---|---|
-| `［Organization名］/［Organization名］.github.io` | `https://［ドメイン］/`（トップ。管理担当のみ） |
-| `［Organization名］/ryo-shindan` | `https://［ドメイン］/ryo-shindan/` |
-| `［Organization名］/作品名` | `https://［ドメイン］/作品名/` |
+| `［Organization名］/［Organization名］.github.io` | `https://studio-arts.jp/`（トップ。管理担当のみ） |
+| `［Organization名］/ryo-shindan` | `https://studio-arts.jp/ryo-shindan/` |
+| `［Organization名］/作品名` | `https://studio-arts.jp/作品名/` |
 
 - 作品名（リポジトリ名）は **半角英小文字・数字・ハイフンだけ** にしてください（例：`ryo-shindan`）。これがそのままURLになります。
 - ドメインの設定は不要です。Organization の中に作れば、自動でこのURLになります。
@@ -49,7 +49,7 @@
 4. リポジトリの **Settings → Pages**
    - Source：**Deploy from a branch**
    - Branch：**main** ／ **/(root)** → **Save**
-5. 数分待って `https://［ドメイン］/作品名/` を開いて確認
+5. 数分待って `https://studio-arts.jp/作品名/` を開いて確認
 6. 管理担当に「公開した」と連絡（トップページの NOW PLAYING に載せるか決めます）
 
 ### 修正したいとき
